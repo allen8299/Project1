@@ -1,0 +1,193 @@
+.loginblock {
+  max-width: 450px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  padding: 15px 25px;
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: auto;
+  text-align: left;
+}
+
+.loginblock .logoimg {
+  width: 50%;
+  margin: auto;
+  display: block;
+}
+
+.loginblock .register_title {
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  padding-bottom: 10px;
+  color: #388062;
+  border-bottom: 2px solid #97A38D;
+}
+
+.loginblock .form_div {
+  margin: 20px;
+}
+
+.loginblock .form_div form label {
+  width: 20%;
+}
+
+.loginblock .form_div form input[type=text], .loginblock .form_div form [type=password] {
+  width: 78%;
+  border: 1px solid #d3d3d3;
+  border-radius: 5px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.loginblock .form_div form p {
+  text-align: center;
+}
+
+.loginblock .form_div form p .register_btn {
+  width: 70px;
+  height: 30px;
+  font-size: 14px;
+  background-color: #388062;
+  color: white;
+  border-radius: 10px;
+  border: 0px;
+  cursor: pointer;
+}
+
+.loginblock .form_div form p .register_btn:hover {
+  opacity: 0.8;
+}
+
+.loginblock .form_div form .other_login {
+  margin: 20px 0;
+  padding: 0 0 15px;
+  text-align: center;
+  position: relative;
+}
+
+.loginblock .form_div form .other_login h3 {
+  position: relative;
+  margin: 10px 0 5px !important;
+  padding: 0 !important;
+  font-size: 1.25em;
+  border: none !important;
+  z-index: 3;
+}
+
+.loginblock .form_div form .other_login h3 span {
+  background-color: #fff;
+  padding: 5px 15px;
+  position: relative;
+  z-index: 98;
+  display: inline-block;
+  color: #333;
+}
+
+.loginblock .form_div form .other_login p {
+  z-index: 100;
+  position: relative;
+}
+
+.loginblock .form_div form .other_login:before {
+  content: '';
+  width: 100%;
+  min-height: 75px;
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  border-top: 2px solid #999;
+  border-radius: 0px;
+  z-index: 2;
+  border: 1px solid #999;
+  border-radius: 5px;
+}
+
+.loginblock .form_div form .btn_div {
+  margin: 10px 0px;
+}
+
+.search_block {
+  background-image: url(https://cdn.pixabay.com/photo/2016/11/20/08/58/books-1842261_1280.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 350px;
+  padding: 0;
+  position: relative;
+  margin-top: 56px;
+  margin-bottom: 20px;
+}
+
+.search_block .searchsystem {
+  width: 80%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 50px 60px 40px;
+  text-align: center;
+  font-size: 1em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.search_block .searchsystem h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  margin-top: 0;
+  font-size: 2.812em;
+}
+
+.reservation {
+  margin-top: 56px;
+}
+
+.reservation h2 {
+  font-size: 2em;
+  text-align: center;
+  margin: 30px;
+  padding-top: 20px;
+}
+
+.history, .product_content, .product_recommend {
+  margin-top: 76px;
+}
+
+.history h2, .product_content h2, .product_recommend h2 {
+  font-size: 2em;
+  text-align: center;
+  margin: 30px;
+}
+
+.product_recommend .recommend {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+  padding: 20px 35px;
+}
+
+.product_recommend .row {
+  border-bottom: 1px solid #DDD;
+  padding-bottom: 15px;
+}
+
+.product_recommend .row label {
+  font-size: 1.2em;
+}
+
+.product_recommend .row label span {
+  color: red;
+  font-size: 1.25em;
+  vertical-align: middle;
+  padding: 5px;
+}
+/*# sourceMappingURL=all.css.map */

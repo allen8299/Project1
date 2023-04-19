@@ -7,10 +7,9 @@
 
 {% block content %}
 
-{% set temp = 'img/' + data.商品圖片 %}
+{% set temp = 'product/' + data.商品編號 + '.jpeg'%}
 
-<br/>
-<div class="row">
+<!-- <div class="row">
 <div class="card" style="width: 20rem;margin-left:5%">
   <img src={{ url_for('static', filename = temp  ) }} class="card-img-top">
   <div class="card-body">
@@ -42,7 +41,43 @@
 </div>
 
 
-</div>
+</div> -->
+<div class="product_content">
+  <div class="row justify-content-center">
+    <div class="card" style="width: 20rem;margin-left:5%">
 
+      <img src={{ url_for('static', filename=temp ) }} class="card-img-top">
+      <!-- <div class="card-body">
+      <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-primary">回商品列表</a>
+      </div> -->
+      <!-- <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>商品類別</b>&nbsp;&nbsp;{{ data.類別 }}</li>
+        <li class="list-group-item"><b>商品單價</b>&nbsp;&nbsp;{{ data.單價 }}</li>
+      </ul> -->
+    </div>
+    <div class="col-sm-6">
+      <form method="post" action={{ url_for('bookstore.cart') }}>
+        <div class="card">
+          <div class="card-body">
+            <span class="badge rounded-pill bg-warning text-dark">{{ data.類別 }}</span>
+            <h5 class="card-title mt-3">{{ data.商品名稱 }}</h5>
+            <ul class="card-text">
+              <li>商品編號：{{data.商品編號 }}</li>
+              <li>作者：{{data.作者 }}</li>
+              <li>出版社：{{data.出版社 }}</li>
+              <li>出版日期：{{data.出版日期 }}</li>
+            </ul>
+            <p class="card-text pt-3 border-top">{{data.商品敘述}}</p>
+            <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入預約</button>
+            <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-primary">回商品列表</a>
+
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+</div>
 
 {% endblock content%}

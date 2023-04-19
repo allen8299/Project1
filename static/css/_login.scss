@@ -1,0 +1,102 @@
+.loginblock{
+    max-width: 450px;
+    // min-width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 25px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: auto;
+    text-align: left;
+    .logoimg{
+        width: 50%;
+        margin: auto;
+        display: block;
+    }
+    .register_title{
+        text-align: center;
+        font-size: 40px;
+        margin-bottom:0px;
+        margin-top: 0px;
+        padding-bottom: 10px;
+        color: #388062;
+        border-bottom: 2px solid #97A38D;
+    }
+    .form_div{
+        margin: 20px;
+        form{
+            label{
+                width: 20%;
+            }
+            input[type=text],[type=password]{
+                width: 78%;
+                border: 1px solid #d3d3d3;
+                border-radius: 5px;
+                height: 30px;
+                margin-bottom: 10px;
+            }
+            p{
+                text-align: center;
+                .register_btn{
+                    width: 70px;
+                    height: 30px;
+                    font-size: 14px;
+                    background-color: #388062;
+                    color:white;
+                    border-radius: 10px;
+                    border: 0px;
+                    cursor: pointer;
+                    &:hover{
+                        opacity: 0.8;
+                    }
+                }
+            }
+            .other_login{
+                margin: 20px 0;
+                padding: 0 0 15px;
+                text-align: center;
+                position: relative;
+                h3{
+                    position: relative;
+                    margin: 10px 0 5px !important;
+                    padding: 0 !important;
+                    font-size: 1.25em;
+                    border: none !important;
+                    z-index: 3;
+                    span{
+                        background-color: #fff;
+                        padding: 5px 15px;
+                        position: relative;
+                        z-index: 98;
+                        display: inline-block;
+                        color: #333;
+                    }
+                }
+                p{
+                    z-index: 100;
+                    position: relative;
+                }
+                &:before{
+                    content: '';
+                    width: 100%;
+                    min-height: 75px;
+                    position: absolute;
+                    top: 15px;
+                    left: 0;
+                    right: 0;
+                    z-index: 9;
+                    border-top: 2px solid #999;
+                    border-radius: 0px;
+                    z-index: 2;
+                    border: 1px solid #999;
+                    border-radius: 5px;
+                }
+            }
+            .btn_div{
+                margin: 10px 0px;
+            }
+        }
+    }
+}

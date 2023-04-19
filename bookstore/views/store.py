@@ -299,6 +299,7 @@ def change_order():
 
 
 def only_cart():
+
     
     count = Cart.check(current_user.id)
 
@@ -325,3 +326,8 @@ def only_cart():
         product_data.append(product)
     
     return product_data
+
+#圖書推薦# 
+@store.route('/bookrecommend')
+def bookrecommend():
+    return render_template('bookrecommend.html', user=current_user.name)

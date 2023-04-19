@@ -1,0 +1,37 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}BookStore{% endblock title%}
+
+{% block content %}
+<div class="product_recommend container">
+    <h2>圖書推薦</h2>
+    <div class="row recommend">
+        <form method="post" action={{ url_for('bookstore.bookrecommend') }} >
+        <div class="col">
+            <div class="row mb-3">
+                <label for="R_BNAME" class="col-sm-4 col-form-label"><span style="color:red">*</span>書名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="R_BNAME" name="r_bname" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="R_ISBN" class="col-sm-4 col-form-label"><span style="color:red">*</span>ISBN</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="R_ISBN" placeholder="*若輸入錯誤可能無法採購到正確資料。 " name="r_isbn" rrequired>
+                </div>
+            </div>
+            
+        </div>
+        <center>
+            <div class="option">
+                <input type="reset" class="btn btn-secondary" value="清除重填">
+              <button class="btn btn-success" type="submit" value="edit" name="buy">確認預約</button>
+            </div>
+          </center>
+          </form>
+    </div>
+</div>
+{% endblock content%}

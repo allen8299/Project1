@@ -82,7 +82,7 @@ def add():
              'name' : name,
              'price' : price,
              'category' : category,
-             'description':description
+             'description':description,
             }
         )
 
