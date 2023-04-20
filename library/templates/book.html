@@ -1,0 +1,45 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}library{% endblock title%}
+
+{% block content %}
+
+{% set temp = 'book/' + data.書籍編號 + '.jpeg'%}
+
+
+</div> -->
+<div class="product_content">
+  <div class="row justify-content-center">
+    <div class="card" style="width: 20rem;margin-left:5%">
+
+      <img src={{ url_for('static', filename=temp ) }} onerror="this.src='/static/img/sdg.jpg'" class="card-img-top">
+    </div>
+    <div class="col-sm-6">
+      <form method="post" action={{ url_for('library.cart') }}>
+        <div class="card">
+          <div class="card-body">
+            <span class="badge rounded-pill bg-warning text-dark">{{ data.書籍類別 }}</span>
+            <h5 class="card-title mt-3">{{ data.書籍名稱 }}</h5>
+            <ul class="card-text">
+              <li>書籍編號：{{data.書籍編號 }}</li>
+              <li>作者：{{data.作者 }}</li>
+              <li>出版社：{{data.出版社 }}</li>
+              <li>出版日期：{{data.出版日期 }}</li>
+            </ul>
+            <!-- <p class="card-text pt-3 border-top">{{data.商品敘述}}</p> -->
+            <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入預約</button>
+            <a href="{{ url_for('library.library') }}" class="btn btn-outline-primary">回書籍列表</a>
+
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+</div>
+
+{% endblock content%}
