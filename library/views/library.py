@@ -11,14 +11,14 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart
+from api.sql import Member, Order_List, Book, Record, Cart
 
 store = Blueprint('library', __name__, template_folder='../templates')
 
 @store.route('/', methods=['GET', 'POST'])
 @login_required
 def library():
-    result = Product.count()
+    result = Book.count()
     count = math.ceil(result[0]/9)
     flag = 0
     
@@ -36,17 +36,25 @@ def library():
         search = request.values.get('keyword')
         keyword = search
         
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM BOOKS WHERE BNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         book_data = []
         final_data = []
         
-        for i in book_row:
+        for row in book_row:
+            bid = row[0]
+            bname = row[1]
+            press = row[2]
+            pdate = row[3]
+            idate = row[4]
+            author = row[5]
+            themeid = row[6]
+            categoryid = row[7]
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '書籍編號': bid,
+                '書籍名稱': bname,
+                '出版社': press
             }
             book_data.append(book)
             total = total + 1
@@ -63,41 +71,56 @@ def library():
         return render_template('library.html', single=single, keyword=search, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
 
     
-    elif 'pid' in request.args:
-        pid = request.args['pid']
-        data = Product.get_product(pid)
+    elif 'bid' in request.args:
+        bid = request.args['bid']
+        data = Book.get_book(bid)
         
-        pname = data[1]
-        price = data[2]
-        category = data[3]
-        description = data[4]
+        bname = data[1]
+        press = data[2]
+        pdate = data[3]
+        idate = data[4]
+        author = data[5]
+        themeid = data[6]
+        categoryid = data[7]
+        # price = data[2]
+        # category = data[3]
+        # description = data[4]
         image = 'sdg.jpg'
         
-        product = {
-            '商品編號': pid,
-            '商品名稱': pname,
-            '單價': price,
-            '類別': category,
-            '商品敘述': description,
-            '商品圖片': image
+        # book = {
+        #     '書籍編號': bid,
+        #     '書籍名稱': pname,
+        #     '單價': price,
+        #     '類別': category,
+        #     '商品敘述': description,
+        #     '商品圖片': image
+        # }
+        book = {
+            '書籍編號': bid,
+            '書籍名稱': bname,
+            '作者': author,
+            '出版社': press,
+            '出版日期': pdate,
+            '入庫日期': idate,
+            '書籍類別': categoryid,
+            '書籍主題': themeid
         }
 
-        return render_template('product.html', data = product, user=current_user.name)
+        return render_template('book.html', data = book, user=current_user.name)
     
     elif 'page' in request.args:
         page = int(request.args['page'])
         start = (page - 1) * 9
         end = page * 9
         
-        book_row = Product.get_all_product()
+        book_row = Book.get_all_book()
         book_data = []
         final_data = []
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '書籍編號': i[0],
+                '書籍名稱': i[1]
             }
             book_data.append(book)
             
@@ -114,17 +137,25 @@ def library():
         single = 1
         search = request.values.get('keyword')
         keyword = search
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM BOOKS WHERE BNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         book_data = []
         total = 0
         
-        for i in book_row:
+        for row in book_row:
+            bid = row[0]
+            bname = row[1]
+            press = row[2]
+            pdate = row[3]
+            idate = row[4]
+            author = row[5]
+            themeid = row[6]
+            categoryid = row[7]
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '書籍編號': bid,
+                '書籍名稱': bname,
+                '出版社': press
             }
 
             book_data.append(book)
@@ -138,14 +169,13 @@ def library():
         return render_template('library.html', keyword=search, single=single, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
     
     else:
-        book_row = Product.get_all_product()
+        book_row = Book.get_all_book()
         book_data = []
         temp = 0
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2],
+                '書籍編號': i[0],
+                '書籍名稱': i[1]
             }
             if len(book_data) < 9:
                 book_data.append(book)
@@ -163,10 +193,10 @@ def cart():
             flash('No permission')
             return redirect(url_for('manager.home'))
 
-    # 回傳有 pid 代表要 加商品
+    # 回傳有 bid 代表要 加商品
     if request.method == 'POST':
         
-        if "pid" in request.form :
+        if "bid" in request.form :
             data = Cart.get_cart(current_user.id)
             
             if( data == None): #假如購物車裡面沒有他的資料
@@ -175,27 +205,27 @@ def cart():
                 data = Cart.get_cart(current_user.id) 
                 
             tno = data[2] # 取得交易編號
-            pid = request.values.get('pid') # 使用者想要購買的東西
+            bid = request.values.get('bid') # 使用者想要購買的東西
             # 檢查購物車裡面有沒有商品
-            product = Record.check_product(pid, tno)
+            book = Record.check_book(bid, tno)
             # 取得商品價錢
-            price = Product.get_product(pid)[2]
+            price = Book.get_book(bid)[2]
 
             # 如果購物車裡面沒有的話 把他加一個進去
-            if(product == None):
-                Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
+            if(book == None):
+                Record.add_book( {'id': tno, 'tno':bid, 'price':price, 'total':price} )
             else:
                 # 假如購物車裡面有的話，就多加一個進去
-                amount = Record.get_amount(tno, pid)
+                amount = Record.get_amount(tno, bid)
                 total = (amount+1)*int(price)
-                Record.update_product({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
+                Record.update_book({'amount':amount+1, 'tno':tno , 'bid':bid, 'total':total})
 
         elif "delete" in request.form :
-            pid = request.values.get('delete')
+            bid = request.values.get('delete')
             tno = Cart.get_cart(current_user.id)[2]
             
-            Member.delete_product(tno, pid)
-            product_data = only_cart()
+            Member.delete_book(tno, bid)
+            book_data = only_cart()
         
         elif "user_edit" in request.form:
             change_order()  
@@ -216,34 +246,34 @@ def cart():
 
             return render_template('complete.html', user=current_user.name)
 
-    product_data = only_cart()
+    book_data = only_cart()
     
-    if product_data == 0:
+    if book_data == 0:
         return render_template('empty.html', user=current_user.name)
     else:
-        return render_template('cart.html', data=product_data, user=current_user.name)
+        return render_template('cart.html', data=book_data, user=current_user.name)
 
 @store.route('/order')
 def order():
     data = Cart.get_cart(current_user.id)
     tno = data[2]
 
-    product_row = Record.get_record(tno)
-    product_data = []
+    book_row = Record.get_record(tno)
+    book_data = []
 
-    for i in product_row:
-        pname = Product.get_name(i[1])
-        product = {
-            '商品編號': i[1],
-            '商品名稱': pname,
+    for i in book_row:
+        pname = Book.get_name(i[1])
+        book = {
+            '書籍編號': i[1],
+            '書籍名稱': pname,
             '商品價格': i[3],
             '數量': i[2]
         }
-        product_data.append(product)
+        book_data.append(book)
     
     total = Record.get_total(tno)[0]
 
-    return render_template('order.html', data=product_data, total=total, user=current_user.name)
+    return render_template('order.html', data=book_data, total=total, user=current_user.name)
 
 @store.route('/orderlist')
 def orderlist():
@@ -269,7 +299,7 @@ def orderlist():
     for j in orderdetail_row:
         temp = {
             '訂單編號': j[0],
-            '商品名稱': j[1],
+            '書籍名稱': j[1],
             '商品單價': j[2],
             '訂購數量': j[3]
         }
@@ -281,15 +311,15 @@ def orderlist():
 def change_order():
     data = Cart.get_cart(current_user.id)
     tno = data[2] # 使用者有購物車了，購物車的交易編號是什麼
-    product_row = Record.get_record(data[2])
+    book_row = Record.get_record(data[2])
 
-    for i in product_row:
+    for i in book_row:
         
-        # i[0]：交易編號 / i[1]：商品編號 / i[2]：數量 / i[3]：價格
+        # i[0]：交易編號 / i[1]：書籍編號 / i[2]：數量 / i[3]：價格
         if int(request.form[i[1]]) != i[2]:
-            Record.update_product({
+            Record.update_book({
                 'amount':request.form[i[1]],
-                'pid':i[1],
+                'bid':i[1],
                 'tno':tno,
                 'total':int(request.form[i[1]])*int(i[3])
             })
@@ -308,24 +338,24 @@ def only_cart():
     
     data = Cart.get_cart(current_user.id)
     tno = data[2]
-    product_row = Record.get_record(tno)
-    product_data = []
+    book_row = Record.get_record(tno)
+    book_data = []
 
-    for i in product_row:
-        pid = i[1]
-        pname = Product.get_name(i[1])
+    for i in book_row:
+        bid = i[1]
+        pname = Book.get_name(i[1])
         price = i[3]
         amount = i[2]
         
-        product = {
-            '商品編號': pid,
-            '商品名稱': pname,
+        book = {
+            '書籍編號': bid,
+            '書籍名稱': pname,
             '商品價格': price,
             '數量': amount
         }
-        product_data.append(product)
+        book_data.append(book)
     
-    return product_data
+    return book_data
 
 #圖書推薦# 
 @store.route('/bookrecommend')
