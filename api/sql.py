@@ -1,6 +1,7 @@
 from typing import Optional
 from link import *
 
+
 class DB():
     def connect():
         cursor = connection.cursor()
@@ -28,11 +29,12 @@ class DB():
     def commit():
         connection.commit()
 
+
 class Member():
     def get_member(account):
         sql = "SELECT ACCOUNT, PASSWORD, MID, IDENTITY, NAME FROM MEMBER WHERE ACCOUNT = :id"
-        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id' : account}))
-    
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': account}))
+
     def get_all_account():
         sql = "SELECT ACCOUNT FROM MEMBER"
         return DB.fetchall(DB.execute(DB.connect(), sql))
@@ -41,62 +43,64 @@ class Member():
         sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+
     def delete_product(tno, pid):
         sql = 'DELETE FROM RECORD WHERE TNO=:tno and PID=:pid '
-        DB.execute_input(DB.prepare(sql), {'tno': tno, 'pid':pid})
+        DB.execute_input(DB.prepare(sql), {'tno': tno, 'pid': pid})
         DB.commit()
-        
+
     def get_order(userid):
         sql = 'SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC'
-        return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':userid}))
-    
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
+
     def get_role(userid):
         sql = 'SELECT IDENTITY, NAME FROM MEMBER WHERE MID = :id '
-        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':userid}))
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': userid}))
+
 
 class Cart():
     def check(user_id):
         sql = 'SELECT * FROM CART, RECORD WHERE CART.MID = :id AND CART.TNO = RECORD.TNO'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
-        
+
     def get_cart(user_id):
         sql = 'SELECT * FROM CART WHERE MID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
 
     def add_cart(user_id, time):
         sql = 'INSERT INTO CART VALUES (:id, :time, cart_tno_seq.nextval)'
-        DB.execute_input( DB.prepare(sql), {'id': user_id, 'time':time})
+        DB.execute_input(DB.prepare(sql), {'id': user_id, 'time': time})
         DB.commit()
 
     def clear_cart(user_id):
         sql = 'DELETE FROM CART WHERE MID = :id '
-        DB.execute_input( DB.prepare(sql), {'id': user_id})
+        DB.execute_input(DB.prepare(sql), {'id': user_id})
         DB.commit()
-       
+
+
 class Product():
     def count():
         sql = 'SELECT COUNT(*) FROM PRODUCT'
-        return DB.fetchone(DB.execute( DB.connect(), sql))
-    
+        return DB.fetchone(DB.execute(DB.connect(), sql))
+
     def get_product(pid):
-        sql ='SELECT * FROM PRODUCT WHERE PID = :id'
+        sql = 'SELECT * FROM PRODUCT WHERE PID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
 
     def get_all_product():
         sql = 'SELECT * FROM PRODUCT'
-        return DB.fetchall(DB.execute( DB.connect(), sql))
-    
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
     def get_name(pid):
         sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
-        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))[0]
 
     def add_product(input):
         sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+
     def delete_product(pid):
         sql = 'DELETE FROM PRODUCT WHERE PID = :id '
         DB.execute_input(DB.prepare(sql), {'id': pid})
@@ -106,7 +110,8 @@ class Product():
         sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+
+
 class Record():
     def get_total_money(tno):
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
@@ -114,7 +119,7 @@ class Record():
 
     def check_product(pid, tno):
         sql = 'SELECT * FROM RECORD WHERE PID = :id and TNO = :tno'
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid, 'tno':tno}))
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid, 'tno': tno}))
 
     def get_price(pid):
         sql = 'SELECT PRICE FROM PRODUCT WHERE PID = :id'
@@ -122,29 +127,29 @@ class Record():
 
     def add_product(input):
         sql = 'INSERT INTO RECORD VALUES (:id, :tno, 1, :price, :total)'
-        DB.execute_input( DB.prepare(sql), input)
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
     def get_record(tno):
         sql = 'SELECT * FROM RECORD WHERE TNO = :id'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'id': tno}))
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': tno}))
 
     def get_amount(tno, pid):
         sql = 'SELECT AMOUNT FROM RECORD WHERE TNO = :id and PID=:pid'
-        return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
-    
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': tno, 'pid': pid}))[0]
+
     def update_product(input):
         sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
         DB.execute_input(DB.prepare(sql), input)
 
     def delete_check(pid):
         sql = 'SELECT * FROM RECORD WHERE PID=:pid'
-        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'pid':pid}))
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'pid': pid}))
 
     def get_total(tno):
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO = :id'
-        return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':tno}))[0]
-    
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': tno}))[0]
+
 
 class Order_List():
     def add_order(input):
@@ -155,7 +160,7 @@ class Order_List():
     def get_order():
         sql = 'SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
         return DB.fetchall(DB.execute(DB.connect(), sql))
-    
+
     def get_orderdetail():
         sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
         return DB.fetchall(DB.execute(DB.connect(), sql))
@@ -164,49 +169,49 @@ class Order_List():
 class Analysis():
     def month_price(i):
         sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql) , {"mon": i}))
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
 
     def month_count(i):
         sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {"mon": i}))
-    
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
+
     def category_sale():
         sql = 'SELECT SUM(TOTAL), CATEGORY FROM(SELECT * FROM PRODUCT,RECORD WHERE PRODUCT.PID = RECORD.PID) GROUP BY CATEGORY'
-        return DB.fetchall( DB.execute( DB.connect(), sql))
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def member_sale():
         sql = 'SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'identity': 'user'}))
 
     def member_sale_count():
         sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
-    
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'identity': 'user'}))
+
 
 # 20230420 BOOKS
 class Book():
     def count():
         sql = 'SELECT COUNT(*) FROM BOOKS'
-        return DB.fetchone(DB.execute( DB.connect(), sql))
-    
+        return DB.fetchone(DB.execute(DB.connect(), sql))
+
     def get_book(bid):
-        sql ='SELECT * FROM BOOKS WHERE BID = :id'
+        sql = 'SELECT * FROM BOOKS WHERE BID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
 
     def get_all_book():
         sql = 'SELECT * FROM BOOKS'
-        return DB.fetchall(DB.execute( DB.connect(), sql))
-    
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
     def get_name(bid):
         sql = 'SELECT PNAME FROM BOOKS WHERE BID = :id'
-        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':bid}))[0]
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))[0]
 
     def add_book(input):
         sql = 'INSERT INTO BOOKS VALUES (:bid, :bname, :author, :press, :pdate, :idate, :categoryid, :themeid)'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+
     def delete_book(bid):
         sql = 'DELETE FROM BOOKS WHERE BID = :id '
         DB.execute_input(DB.prepare(sql), {'id': bid})
@@ -216,5 +221,11 @@ class Book():
         sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press, \
                                PDATE=:pdate, IDATE=:idate, CATEGORYID=:categoryid, THEMEID=:themeid \
                WHERE BID=:bid'
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+class Recommend_Book():
+    def recommend_book(input):
+        sql = 'INSERT INTO RECOMMENDATION VALUES (:r_isbn, :r_bname, :mid)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
