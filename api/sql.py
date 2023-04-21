@@ -242,3 +242,15 @@ class Categories():
     def get_categories(categoryid):
         sql = 'SELECT * FROM CATEGORIES WHERE CATEGORYID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': categoryid}))
+
+# 20230422 借閱/預約相關紀錄
+class Book_Record():
+    def get_reservation(bid, status):
+        sql = 'SELECT * FROM RESERVATIONRECORDS WHERE BID = :id AND RESERVESTATUS = :status '
+        print(sql)
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid, 'status': status}))
+    
+    def check_book_is_borrowed(bid):
+        sql = 'SELECT * FROM BORROWINGRECORDS WHERE BID = :id AND (RETURNDATE IS NULL OR RETURNDATE = \'\' ) '
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
+    

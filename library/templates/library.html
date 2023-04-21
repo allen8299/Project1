@@ -36,8 +36,6 @@
     <br />
   </section>
   <form method="post" action={{ url_for('library.cart') }}>
-
-
     {% for book in book_data %}
     {% if loop.index % 3 == 1 %}
     <div class="row justify-content-center">

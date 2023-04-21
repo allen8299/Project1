@@ -12,7 +12,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book, Theme, Categories
+from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book, Theme, Categories, Book_Record
 
 store = Blueprint('library', __name__, template_folder='../templates')
 
@@ -73,6 +73,8 @@ def library():
         return render_template('library.html', single=single, keyword=search, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
 
     elif 'bid' in request.args:
+        book_is_borrowed = False
+
         bid = request.args['bid']
         data = Book.get_book(bid)
 
@@ -88,6 +90,14 @@ def library():
         # description = data[4]
         image = 'sdg.jpg'
 
+        # 確認借閱狀態
+        br_data = Book_Record.check_book_is_borrowed(bid)
+        print('br_data:')
+        print(br_data)
+        if br_data is not None:
+            book_is_borrowed = True
+        # 確認預約狀態
+
         theme_data = Theme.get_theme(themeid)
         category_data = Categories.get_categories(categoryid)
         book = {
@@ -101,7 +111,7 @@ def library():
             '書籍主題': category_data[1]
         }
 
-        return render_template('book.html', data=book, user=current_user.name)
+        return render_template('book.html', data=book, user=current_user.name, book_is_borrowed = book_is_borrowed)
 
     elif 'page' in request.args:
         page = int(request.args['page'])
@@ -361,8 +371,8 @@ def only_cart():
 # 圖書推薦#
 
 
-@store.route('/bookrecommend', methods=['GET', 'POST'])
-def bookrecommend():
+@store.route('/book_recommend', methods=['GET', 'POST'])
+def book_recommend():
     # 以防管理者誤闖
     if request.method == 'GET':
         if (current_user.role == 'manager'):
@@ -377,4 +387,48 @@ def bookrecommend():
             Recommend_Book.recommend_book(
                 {'r_isbn': r_isbn, 'r_bname': r_bname, 'mid': current_user.id})
 
-    return render_template('bookrecommend.html', user=current_user.name)
+    return render_template('book_recommend.html', user=current_user.name)
+
+
+@store.route('/book', methods=['GET', 'POST'])
+def book_reserve():
+    # 以防管理者誤闖
+    if request.method == 'GET':
+        if (current_user.role == 'manager'):
+            flash('No permission')
+            return redirect(url_for('manager.home'))
+    # 取得當天日期
+    today = datetime.today().strftime('%Y-%m-%d')
+    print(today)
+
+    if request.method == 'POST':
+        if "reserve" in request.form:
+            # 取得bid
+            bid = request.values.get('reserve')
+            reserve_date = request.values.get('reserve_date')
+            print(reserve_date)
+            data = Book.get_book(bid)
+
+            bname = data[1]
+            press = data[2]
+            pdate = data[3]
+            idate = data[4]
+            author = data[5]
+            themeid = data[6]
+            categoryid = data[7]
+            image = 'sdg.jpg'
+
+            theme_data = Theme.get_theme(themeid)
+            category_data = Categories.get_categories(categoryid)
+            book = {
+                '書籍編號': bid,
+                '書籍名稱': bname,
+                '作者': author,
+                '出版社': press,
+                '出版日期': pdate,
+                '入庫日期': idate,
+                '書籍類別': theme_data[1],
+                '書籍主題': category_data[1]
+            }
+
+    return render_template('book.html', data=book, user=current_user.name)

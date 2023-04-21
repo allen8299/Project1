@@ -18,7 +18,7 @@
       <img src={{ url_for('static', filename=temp ) }} onerror="this.src='/static/img/sdg.jpg'" class="card-img-top">
     </div>
     <div class="col-sm-6">
-      <form method="post" action={{ url_for('library.cart') }}>
+      <form method="post" action={{ url_for('library.book_reserve') }}>
         <div class="card">
           <div class="card-body">
             <span class="badge rounded-pill bg-info text-dark">{{ data.書籍類別 }}</span>
@@ -31,10 +31,38 @@
               <li>出版日期：{{data.出版日期 }}</li>
             </ul>
             <!-- <p class="card-text pt-3 border-top">{{data.商品敘述}}</p> -->
-            <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button>
-            <button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow">借閱書籍</button>
-            <a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
+            <!-- <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button> -->
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+              data-bs-target="#review_staticBackdrop">
+              預約書籍
+            </button>
+            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
+              name="borrow">借閱書籍</button>
+            &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
+            &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
 
+          </div>
+        </div>
+        <!-- 預約書籍Modal -->
+        <div class="modal fade" id="review_staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="review_staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="review_staticBackdropLabel">預約書籍</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <!-- 日期輸入欄位 -->
+                  <p>預約日期: <input type="text" id="datepicker" name="reserve_date" required></p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -43,5 +71,14 @@
 
   </div>
 </div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+$( function() {
+  $( "#datepicker" ).datepicker();
+} );
+</script>
 
 {% endblock content%}
