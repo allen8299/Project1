@@ -229,3 +229,16 @@ class Recommend_Book():
         sql = 'INSERT INTO RECOMMENDATION VALUES (:r_isbn, :r_bname, :mid)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
+
+# 20230420 THEME
+class Theme():
+    def get_theme(themeid):
+        sql = 'SELECT * FROM THEME WHERE THEMEID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': themeid}))
+    
+# 20230420 CATEGORIES
+class Categories():
+    def get_categories(categoryid):
+        sql = 'SELECT * FROM CATEGORIES WHERE CATEGORYID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': categoryid}))

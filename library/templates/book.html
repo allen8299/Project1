@@ -21,7 +21,8 @@
       <form method="post" action={{ url_for('library.cart') }}>
         <div class="card">
           <div class="card-body">
-            <span class="badge rounded-pill bg-warning text-dark">{{ data.書籍類別 }}</span>
+            <span class="badge rounded-pill bg-info text-dark">{{ data.書籍類別 }}</span>
+            <span class="badge rounded-pill bg-warning text-dark">{{ data.書籍主題 }}</span>
             <h5 class="card-title mt-3">{{ data.書籍名稱 }}</h5>
             <ul class="card-text">
               <li>書籍編號：{{data.書籍編號 }}</li>
@@ -30,8 +31,9 @@
               <li>出版日期：{{data.出版日期 }}</li>
             </ul>
             <!-- <p class="card-text pt-3 border-top">{{data.商品敘述}}</p> -->
-            <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入預約</button>
-            <a href="{{ url_for('library.library') }}" class="btn btn-outline-primary">回書籍列表</a>
+            <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button>
+            <button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow">借閱書籍</button>
+            <a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
 
           </div>
         </div>

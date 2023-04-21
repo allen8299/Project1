@@ -12,7 +12,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book
+from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book, Theme, Categories
 
 store = Blueprint('library', __name__, template_folder='../templates')
 
@@ -88,14 +88,8 @@ def library():
         # description = data[4]
         image = 'sdg.jpg'
 
-        # book = {
-        #     '書籍編號': bid,
-        #     '書籍名稱': pname,
-        #     '單價': price,
-        #     '類別': category,
-        #     '商品敘述': description,
-        #     '商品圖片': image
-        # }
+        theme_data = Theme.get_theme(themeid)
+        category_data = Categories.get_categories(categoryid)
         book = {
             '書籍編號': bid,
             '書籍名稱': bname,
@@ -103,8 +97,8 @@ def library():
             '出版社': press,
             '出版日期': pdate,
             '入庫日期': idate,
-            '書籍類別': categoryid,
-            '書籍主題': themeid
+            '書籍類別': theme_data[1],
+            '書籍主題': category_data[1]
         }
 
         return render_template('book.html', data=book, user=current_user.name)
