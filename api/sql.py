@@ -181,3 +181,40 @@ class Analysis():
     def member_sale_count():
         sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
         return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
+    
+
+# 20230420 BOOKS
+class Book():
+    def count():
+        sql = 'SELECT COUNT(*) FROM BOOKS'
+        return DB.fetchone(DB.execute( DB.connect(), sql))
+    
+    def get_book(bid):
+        sql ='SELECT * FROM BOOKS WHERE BID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
+
+    def get_all_book():
+        sql = 'SELECT * FROM BOOKS'
+        return DB.fetchall(DB.execute( DB.connect(), sql))
+    
+    def get_name(bid):
+        sql = 'SELECT PNAME FROM BOOKS WHERE BID = :id'
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':bid}))[0]
+
+    def add_book(input):
+        sql = 'INSERT INTO BOOKS VALUES (:bid, :bname, :author, :press, :pdate, :idate, :categoryid, :themeid)'
+
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+    
+    def delete_book(bid):
+        sql = 'DELETE FROM BOOKS WHERE BID = :id '
+        DB.execute_input(DB.prepare(sql), {'id': bid})
+        DB.commit()
+
+    def update_book(input):
+        sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press, \
+                               PDATE=:pdate, IDATE=:idate, CATEGORYID=:categoryid, THEMEID=:themeid \
+               WHERE BID=:bid'
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()

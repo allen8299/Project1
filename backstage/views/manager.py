@@ -96,7 +96,7 @@ def edit():
     if request.method == 'GET':
         if(current_user.role == 'user'):
             flash('No permission')
-            return redirect(url_for('bookstore'))
+            return redirect(url_for('library'))
 
     if request.method == 'POST':
         Product.update_product(

@@ -21,17 +21,6 @@
 {% endwith %}
 
 <div class="book_table container">
-
-  <!-- <form class="d-flex col-sm-4" action="{{ url_for('library.library', keyword=1) }}">
-    <div class="input-group">
-    <span class="input-group-text" id="basic-addon1">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-      </svg>
-    </span>
-    <input name='keyword' class="form-control me-2" type="search" placeholder="搜尋商品" aria-label="Search">
-    </div>
-  </form><br/> -->
   <section class="section col-12 search_block">
     <div class="col">
       <div class="searchsystem">
@@ -55,21 +44,12 @@
       {% endif %}
 
       <div class="col-sm-4">
-        <!-- <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{book.商品名稱}}</h5>
-              <p class="card-text">${{book.商品價格}}</p>
-              
-              <a href="{{ url_for('library.library', pid=book.商品編號) }}" class="btn btn-outline-primary">查看商品資訊</a>
-              <button class="btn btn-outline-success" type="submit" value="{{book.商品編號}}" name="pid" >加入購物車</button>
-            </div>
-          </div> -->
         <div class="card shadow-sm align-items-center">
-          <a href="{{ url_for('library.library', pid=book.商品編號) }}" class="">
-            <img src="/static/product/{{book.商品編號+'.jpeg'}}" onerror="this.src='/static/img/sdg.jpg'" alt=""
+          <a href="{{ url_for('library.library', bid=book.書籍編號) }}" class="">
+            <img src="/static/book/{{book.書籍編號+'.jpeg'}}" onerror="this.src='/static/img/sdg.jpg'" alt=""
               style="height: 290px;width: 100%;"></a>
           <div class="card-body text-center">
-            <h5 class="card-title">{{book.商品名稱}}</h5>
+            <h5 class="card-title">{{book.書籍名稱}}</h5>
           </div>
         </div>
       </div>

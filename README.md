@@ -9,7 +9,7 @@
 - 後台管理者可以編輯書籍，並檢視每筆借閱紀錄以及書籍借閱圖表。
 
 ## 以下為助教提供範例
-點選以下連結體驗系統功能: https://bookstore.tarflow.com/
+點選以下連結體驗系統功能: https://library.tarflow.com/
 ![image](https://user-images.githubusercontent.com/52253495/226426951-b1ef62d0-56ae-443f-9483-c06524b5fb12.png)
 
 
