@@ -386,8 +386,20 @@ def book_cart():
                 {'mid': current_user.id, 'bid': bid})
             flash('Cancel Success')
         elif "borrow" in request.form:
+            bid = request.values.get('borrow')
             # 借閱書籍，狀態改為B，寫入預約紀錄
             print('借閱書籍')
+            
+            # 取得當天日期
+            today_data = datetime.now().date()
+            future_date = today_data + timedelta(days=14)
+            print('當天日期：', today_data)
+            print('14 天後的日期：', future_date)
+            Book_Record.update_user_borrow_record_status(
+                {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
+            Book_Record.insert_borrow_record(
+                {'mid': current_user.id, 'bid': bid, 'borrowdate': today_data, 'limitdate': future_date})
+            flash('Borrow Success')
 
     book_data = only_cart()
     # book_data = 0
@@ -420,17 +432,17 @@ def only_cart():
         reserve_status = row[3]
         book_row = Book.get_book(bid)
 
-        if today_date > reserve_date:
-            # 當前日期超過預約日期，預約狀態改為C(預約過期)
+        if today_date > reserve_date and reserve_status != 'B':
+            # 當前日期超過預約日期，也沒有借閱完成(B)，預約狀態改為C(預約過期)
             print('當前日期超過預約日期，預約狀態改為C(預約過期)')
             Book_Record.update_user_borrow_record_status(
                 {'mid': current_user.id, 'bid': bid, 'reservestatus': 'C'})
             reserve_status = 'C'
-        elif today_date == reserve_date:
-            print('借閱')
-            Book_Record.update_user_borrow_record_status(
-                {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
-            reserve_status = 'B'
+        # elif today_date == reserve_date:
+        #     print('借閱')
+        #     Book_Record.update_user_borrow_record_status(
+        #         {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
+        #     reserve_status = 'B'
 
         # if reserve_status == 'A':
         #     reserve_status_str = '預約中'
@@ -447,6 +459,7 @@ def only_cart():
             '書籍編號': bid,
             '書籍名稱': bname,
             '預約日期': reserve_date,
+            '今天日期': today_date,
             '預約狀態': reserve_status
         }
         book_data.append(book)
