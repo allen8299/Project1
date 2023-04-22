@@ -26,9 +26,9 @@
 --------------------------------------------------------
  CREATE TABLE "GROUP7"."CATEGORIS" 
     (	
-    "CATEGORISID" VARCHAR2(20) NOT NULL, 
+    "CATEGORYID" VARCHAR2(20) NOT NULL, 
     "CNAME" VARCHAR2(50), 
-    PRIMARY KEY("CATEGORISID")
+    PRIMARY KEY("CATEGORYID")
     ) ;
 
 --------------------------------------------------------
@@ -43,10 +43,10 @@
     "IDATE" DATE,
     "AUTHOR" VARCHAR2(50),
     "THEMEID" VARCHAR2(20),
-    "CATEGORISID" VARCHAR2(20),
+    "CATEGORYID" VARCHAR2(20),
     PRIMARY KEY("BID"),
     FOREIGN KEY("THEMEID") REFERENCES "GROUP7"."THEME"("THEMEID"),
-    FOREIGN KEY("CATEGORISID") REFERENCES "GROUP7"."CATEGORIS"("CATEGORISID")
+    FOREIGN KEY("CATEGORYID") REFERENCES "GROUP7"."CATEGORIS"("CATEGORYID")
     ) ;
 
 --------------------------------------------------------
