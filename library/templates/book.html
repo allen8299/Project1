@@ -29,15 +29,19 @@
               <li>作者：{{data.作者 }}</li>
               <li>出版社：{{data.出版社 }}</li>
               <li>出版日期：{{data.出版日期 }}</li>
+              {% if book_is_borrowed == "disabled" %}
+              <li>借閱狀態：借閱中</li>
+              {% endif %}
+              {% if book_is_reserved == "disabled" %}
+              <li>預約狀態：預約中</li>
+              {% endif %}
             </ul>
-            <!-- <p class="card-text pt-3 border-top">{{data.商品敘述}}</p> -->
-            <!-- <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button> -->
             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-              data-bs-target="#review_staticBackdrop">
+              data-bs-target="#review_staticBackdrop" {{book_is_reserved}}>
               預約書籍
             </button>
             &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
-              name="borrow">借閱書籍</button>
+              name="borrow" {{book_is_borrowed}}>借閱書籍</button>
             &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
             &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
 

@@ -4,7 +4,7 @@ from flask import Flask, request, template_rendered, Blueprint
 from flask import url_for, redirect, flash
 from flask import render_template
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from datetime import datetime
+from datetime import datetime, timedelta
 from numpy import identity, product
 import random
 import string
@@ -73,7 +73,8 @@ def library():
         return render_template('library.html', single=single, keyword=search, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
 
     elif 'bid' in request.args:
-        book_is_borrowed = False
+        book_is_borrowed = ''
+        book_is_reserved = ''
 
         bid = request.args['bid']
         data = Book.get_book(bid)
@@ -91,12 +92,17 @@ def library():
         image = 'sdg.jpg'
 
         # 確認借閱狀態
-        br_data = Book_Record.check_book_is_borrowed(bid)
+        bb_data = Book_Record.check_book_is_borrowed(bid)
+        print('bb_data:')
+        print(bb_data)
+        if bb_data is not None:
+            book_is_borrowed = 'disabled'
+        # 確認預約狀態
+        br_data = Book_Record.check_book_is_reserved(bid)
         print('br_data:')
         print(br_data)
         if br_data is not None:
-            book_is_borrowed = True
-        # 確認預約狀態
+            book_is_reserved = 'disabled'
 
         theme_data = Theme.get_theme(themeid)
         category_data = Categories.get_categories(categoryid)
@@ -111,7 +117,7 @@ def library():
             '書籍主題': category_data[1]
         }
 
-        return render_template('book.html', data=book, user=current_user.name, book_is_borrowed = book_is_borrowed)
+        return render_template('book.html', data=book, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
 
     elif 'page' in request.args:
         page = int(request.args['page'])
@@ -398,15 +404,25 @@ def book_reserve():
             flash('No permission')
             return redirect(url_for('manager.home'))
     # 取得當天日期
-    today = datetime.today().strftime('%Y-%m-%d')
-    print(today)
+    today = datetime.now().date()
+    future_date = today + timedelta(days=14)
+
+    print('當天日期：', today)
+    print('14 天後的日期：', future_date)
 
     if request.method == 'POST':
         if "reserve" in request.form:
             # 取得bid
             bid = request.values.get('reserve')
-            reserve_date = request.values.get('reserve_date')
+            tmp_reserve_date = request.values.get('reserve_date')
+
+            # 不知道為何datepicker format沒有用
+            # 將日期字串轉換為 datetime 物件
+            date_obj = datetime.strptime(tmp_reserve_date, "%m/%d/%Y")
+            # 將 datetime 物件轉換為字串
+            reserve_date = date_obj.strftime("%Y-%m-%d")
             print(reserve_date)
+
             data = Book.get_book(bid)
 
             bname = data[1]
@@ -430,5 +446,13 @@ def book_reserve():
                 '書籍類別': theme_data[1],
                 '書籍主題': category_data[1]
             }
+            # 寫入預約
+            reserve_status = 'A'
+            book_is_borrowed = True
+            book_is_reserved = False
+            print(current_user.id, bid, reserve_date, reserve_status)
+            Book_Record.insert_reservation_record(
+                {'mid': current_user.id, 'bid': bid, 'reservedate': reserve_date, 'reservestatus': reserve_status})
 
-    return render_template('book.html', data=book, user=current_user.name)
+    # 改成bid去get_book可能比較好
+    return render_template('book.html', data=book, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)

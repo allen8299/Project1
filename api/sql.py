@@ -245,12 +245,28 @@ class Categories():
 
 # 20230422 借閱/預約相關紀錄
 class Book_Record():
-    def get_reservation(bid, status):
-        sql = 'SELECT * FROM RESERVATIONRECORDS WHERE BID = :id AND RESERVESTATUS = :status '
+    # def get_reservation(bid, status):
+    #     sql = 'SELECT * FROM RESERVATIONRECORDS WHERE BID = :id AND RESERVESTATUS = :status '
+    #     print(sql)
+    #     return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid, 'status': status}))
+    def check_book_is_reserved(bid):
+        sql = 'SELECT * FROM RESERVATIONRECORDS WHERE BID = :id AND (RESERVEDATE IS NOT NULL OR RESERVEDATE != \'\' ) '
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
+    
+    def insert_reservation_record(input):
+        sql = 'INSERT INTO RESERVATIONRECORDS (MID, BID, RESERVEDATE, RESERVESTATUS) VALUES (:mid, :bid, TO_DATE(:reservedate, \'YYYY-MM-DD\'), :reservestatus)'
         print(sql)
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid, 'status': status}))
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
     
     def check_book_is_borrowed(bid):
         sql = 'SELECT * FROM BORROWINGRECORDS WHERE BID = :id AND (RETURNDATE IS NULL OR RETURNDATE = \'\' ) '
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
+    
+    def insert_borrow_record(input):
+        sql = 'INSERT INTO BORROWINGRECORDS (MID, BID, BORROWDATE, RETURNDATE, LIMITDATE) VALUES (:mid, :bid, :borrowdate, :returndate, :limitdate)'
+
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
     
