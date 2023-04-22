@@ -226,7 +226,7 @@ class Book():
 
 class Recommend_Book():
     def recommend_book(input):
-        sql = 'INSERT INTO RECOMMENDATION VALUES (:r_isbn, :r_bname, :mid)'
+        sql = 'INSERT INTO RECOMMENDATION (R_ISBN, R_BNAME, MID) VALUES (:r_isbn, :r_bname, :mid)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
@@ -269,4 +269,20 @@ class Book_Record():
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
+    # def check(user_id):
+    #     sql = 'SELECT * FROM RESERVATIONRECORDS, BORROWINGRECORDS WHERE RESERVATIONRECORDS.MID = :id AND RESERVATIONRECORDS.BID = RECORD.BID'
+    #     return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
+
+    def get_user_borrow_record(user_id):
+        sql = 'SELECT MID, BID, RESERVEDATE, RESERVESTATUS  FROM RESERVATIONRECORDS WHERE RESERVATIONRECORDS.MID = :id'
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': user_id}))
     
+    def update_user_borrow_record_status(input):
+        sql = 'UPDATE RESERVATIONRECORDS SET RESERVESTATUS=:reservestatus WHERE MID=:mid AND BID=:bid '
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    # def delete_user_borrow_record(input):
+    #     sql = 'DELETE FROM RESERVATIONRECORDS WHERE MID=:mid AND BID=:bid '
+    #     DB.execute_input(DB.prepare(sql), input)
+    #     DB.commit()
