@@ -1,0 +1,84 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}預約清單{% endblock title%}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'No permission' %}
+<script language="javascript">
+  alert('您沒有使用者的權限喔！');
+</script>
+{% elif messages[0] == 'Cancel Success' %}
+<script language="javascript">
+  alert('取消預約成功！');
+</script>
+{% endif %}
+{% endwith %}
+
+<div class="reservation">
+  <div class="container">
+    <h2>預約清單</h2>
+    <br />
+    <form method="post" action={{ url_for('library.book_cart') }}>
+      <table class="table table-bordered">
+        <tr>
+          <th>
+            <center>書籍編號</center>
+          </th>
+          <th>
+            <center>書籍名稱</center>
+          </th>
+          <th>
+            <center>預約日期</center>
+          </th>
+          <th>
+            <center>狀態/功能</center>
+          </th>
+
+        </tr>
+        {% for book in data %}
+        <tr>
+          <td>
+            <center>{{ book.書籍編號 }}</center>
+          </td>
+          <td>
+            <center>{{ book.書籍名稱 }}</center>
+          </td>
+          <td>
+            <center>{{ book.預約日期 }}</center>
+          </td>
+          <td>
+            <center>
+              {% if book.預約狀態 == 'A' %}
+              <button class="btn btn-danger" type="submit" value="{{book.書籍編號}}" name="cancel"
+                onclick="return (confirm('你確定要取消預約 <{{ book.書籍名稱 }}> 嗎？'))">
+                取消預約
+              </button>
+              {% elif book.預約狀態 == 'B' %}
+              <button class="btn btn-success" type="submit" value="{{book.書籍編號}}" name="borrow"
+                onclick="return (confirm('你確定要借閱 <{{ book.書籍名稱 }}> 嗎？'))">
+                借閱書籍
+              </button>
+              {% elif book.預約狀態 == 'C' %}
+              預約已過期
+              {% endif %}
+            </center>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </table>
+      <center>
+        <div class="option">
+          <a href="{{ url_for('library.library') }}" class="btn btn-primary">回書籍列表</a>
+        </div>
+      </center>
+    </form>
+
+  </div>
+</div>
+{% endblock content%}

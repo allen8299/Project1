@@ -73,8 +73,8 @@ def library():
         return render_template('library.html', single=single, keyword=search, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
 
     elif 'bid' in request.args:
-        book_is_borrowed = ''
-        book_is_reserved = ''
+        book_is_borrowed = False
+        book_is_reserved = False
 
         bid = request.args['bid']
         data = Book.get_book(bid)
@@ -96,13 +96,13 @@ def library():
         print('bb_data:')
         print(bb_data)
         if bb_data is not None:
-            book_is_borrowed = 'disabled'
+            book_is_borrowed = True
         # 確認預約狀態
         br_data = Book_Record.check_book_is_reserved(bid)
         print('br_data:')
         print(br_data)
         if br_data is not None:
-            book_is_reserved = 'disabled'
+            book_is_reserved = True
 
         theme_data = Theme.get_theme(themeid)
         category_data = Categories.get_categories(categoryid)
@@ -345,36 +345,7 @@ def change_order():
 
     return 0
 
-
-def only_cart():
-
-    count = Cart.check(current_user.id)
-
-    if (count == None):
-        return 0
-
-    data = Cart.get_cart(current_user.id)
-    tno = data[2]
-    book_row = Record.get_record(tno)
-    book_data = []
-
-    for i in book_row:
-        bid = i[1]
-        pname = Book.get_name(i[1])
-        price = i[3]
-        amount = i[2]
-
-        book = {
-            '書籍編號': bid,
-            '書籍名稱': pname,
-            '商品價格': price,
-            '數量': amount
-        }
-        book_data.append(book)
-
-    return book_data
-
-# 圖書推薦#
+# 圖書推薦
 
 
 @store.route('/book_recommend', methods=['GET', 'POST'])
@@ -395,8 +366,115 @@ def book_recommend():
 
     return render_template('book_recommend.html', user=current_user.name)
 
+# 預約清單
+# 懶得想名字，就用cart
 
-@store.route('/book', methods=['GET', 'POST'])
+
+@store.route('/book_cart', methods=['GET', 'POST'])
+def book_cart():
+    # 以防管理者誤闖
+    if request.method == 'GET':
+        if (current_user.role == 'manager'):
+            flash('No permission')
+            return redirect(url_for('manager.home'))
+
+    if request.method == 'POST':
+        if "cancel" in request.form:
+            # 取消預約，狀態改為D
+            bid = request.values.get('cancel')
+            Book_Record.delete_user_borrow_record(
+                {'mid': current_user.id, 'bid': bid})
+            flash('Cancel Success')
+        elif "borrow" in request.form:
+            # 借閱書籍，狀態改為B，寫入預約紀錄
+            print('借閱書籍')
+
+    book_data = only_cart()
+    # book_data = 0
+    if book_data == 0:
+        return render_template('empty.html', user=current_user.name)
+    else:
+        return render_template('book_cart.html', data=book_data, user=current_user.name)
+
+
+def only_cart():
+    count = Book_Record.get_user_borrow_record(current_user.id)
+
+    if (count == None):
+        return 0
+
+    # 圖書不一定會預約再借閱，也可能直接借閱
+    record_row = Book_Record.get_user_borrow_record(current_user.id)
+
+    # 取得當天日期
+    today_date = datetime.today().strftime('%Y-%m-%d')
+
+    book_data = []
+
+    for row in record_row:
+        # reserve_status_str = ''
+        bid = row[1]
+        reserve_date = row[2]
+        reserve_date = str(reserve_date)[0:10]
+        print(today_date, reserve_date)
+        reserve_status = row[3]
+        book_row = Book.get_book(bid)
+
+        if today_date > reserve_date:
+            # 當前日期超過預約日期，預約狀態改為C(預約過期)
+            print('當前日期超過預約日期，預約狀態改為C(預約過期)')
+            Book_Record.update_user_borrow_record_status(
+                {'mid': current_user.id, 'bid': bid, 'reservestatus': 'C'})
+            reserve_status = 'C'
+        elif today_date == reserve_date:
+            print('借閱')
+            Book_Record.update_user_borrow_record_status(
+                {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
+            reserve_status = 'B'
+
+        # if reserve_status == 'A':
+        #     reserve_status_str = '預約中'
+        # elif reserve_status == 'B':
+        #     reserve_status_str = '借閱完成'
+        # elif reserve_status == 'C':
+        #     reserve_status_str = '預約過期'
+        # elif reserve_status == 'D':
+        #     reserve_status_str = '預約取消'
+
+        bname = book_row[1]
+
+        book = {
+            '書籍編號': bid,
+            '書籍名稱': bname,
+            '預約日期': reserve_date,
+            '預約狀態': reserve_status
+        }
+        book_data.append(book)
+
+    return book_data
+
+# 歷史預約
+
+
+def book_orderlist():
+    # 以防管理者誤闖
+    if request.method == 'GET':
+        if (current_user.role == 'manager'):
+            flash('No permission')
+            return redirect(url_for('manager.home'))
+
+    # if request.method == 'POST':
+    #     if "recommend" in request.form:
+    #         r_isbn = request.values.get('r_isbn')  # ISBN
+    #         r_bname = request.values.get('r_bname')  # 書名
+    #         # 寫入書籍預約
+    #         Recommend_Book.recommend_book(
+    #             {'r_isbn': r_isbn, 'r_bname': r_bname, 'mid': current_user.id})
+
+    return render_template('book_record.html', user=current_user.name)
+
+
+@ store.route('/book', methods=['GET', 'POST'])
 def book_reserve():
     # 以防管理者誤闖
     if request.method == 'GET':
@@ -404,6 +482,7 @@ def book_reserve():
             flash('No permission')
             return redirect(url_for('manager.home'))
     # 取得當天日期
+    today_date = datetime.today().strftime('%Y-%m-%d')
     today = datetime.now().date()
     future_date = today + timedelta(days=14)
 
@@ -412,6 +491,8 @@ def book_reserve():
 
     if request.method == 'POST':
         if "reserve" in request.form:
+            book_is_borrowed = False
+            book_is_reserved = False
             # 取得bid
             bid = request.values.get('reserve')
             tmp_reserve_date = request.values.get('reserve_date')
@@ -421,10 +502,9 @@ def book_reserve():
             date_obj = datetime.strptime(tmp_reserve_date, "%m/%d/%Y")
             # 將 datetime 物件轉換為字串
             reserve_date = date_obj.strftime("%Y-%m-%d")
-            print(reserve_date)
+            print(today_date, reserve_date)
 
             data = Book.get_book(bid)
-
             bname = data[1]
             press = data[2]
             pdate = data[3]
@@ -446,13 +526,22 @@ def book_reserve():
                 '書籍類別': theme_data[1],
                 '書籍主題': category_data[1]
             }
-            # 寫入預約
-            reserve_status = 'A'
-            book_is_borrowed = True
-            book_is_reserved = False
-            print(current_user.id, bid, reserve_date, reserve_status)
-            Book_Record.insert_reservation_record(
-                {'mid': current_user.id, 'bid': bid, 'reservedate': reserve_date, 'reservestatus': reserve_status})
+            if reserve_date <= today_date:
+                flash('Reserve Error')
+            else:
+                # 寫入預約
+                reserve_status = 'A'
+                book_is_reserved = True
+                print(current_user.id, bid, reserve_date, reserve_status)
+                Book_Record.insert_reservation_record(
+                    {'mid': current_user.id, 'bid': bid, 'reservedate': reserve_date, 'reservestatus': reserve_status})
+                flash('Reserve Success')
 
-    # 改成bid去get_book可能比較好
+    # FIXME 改成bid去get_book可能比較好
     return render_template('book.html', data=book, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
+
+
+@store.route('/', methods=['GET', 'POST'])
+@store.errorhandler(ValueError)
+def handle_value_error(error):
+    return render_template('error.html', message=error), 400

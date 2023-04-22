@@ -7,7 +7,21 @@
 
 {% block content %}
 
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'Reserve Error' %}
+<script language="javascript">
+  alert('預約日期不得小於等於今天日期！');
+</script>
+{% elif messages[0] == 'Reserve Success' %}
+<script language="javascript">
+  alert('預約成功！');
+</script>
+{% endif %}
+{% endwith %}
+
 {% set temp = 'book/' + data.書籍編號 + '.jpeg'%}
+
+
 
 
 </div> -->
@@ -29,19 +43,33 @@
               <li>作者：{{data.作者 }}</li>
               <li>出版社：{{data.出版社 }}</li>
               <li>出版日期：{{data.出版日期 }}</li>
-              {% if book_is_borrowed == "disabled" %}
+              {% if book_is_borrowed == True %}
               <li>借閱狀態：借閱中</li>
               {% endif %}
-              {% if book_is_reserved == "disabled" %}
+              {% if book_is_reserved == True %}
               <li>預約狀態：預約中</li>
               {% endif %}
             </ul>
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-              data-bs-target="#review_staticBackdrop" {{book_is_reserved}}>
+            
+            {% if book_is_reserved == True %}
+            &nbsp;<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+              data-bs-target="#review_staticBackdrop" disabled>
               預約書籍
             </button>
-            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow"
-              {{book_is_borrowed}}>借閱書籍</button>
+            {% else %}
+            &nbsp;<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+              data-bs-target="#review_staticBackdrop">
+              預約書籍
+            </button>
+            {% endif %}
+            {% if book_is_borrowed == True %}
+            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
+            name="borrow" disabled>借閱書籍</button>
+            {% else %}
+            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
+            name="borrow">借閱書籍</button>
+            {% endif %}
+            
             &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
             &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
 
