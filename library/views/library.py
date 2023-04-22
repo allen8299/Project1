@@ -384,6 +384,7 @@ def book_cart():
             bid = request.values.get('cancel')
             Book_Record.delete_user_borrow_record(
                 {'mid': current_user.id, 'bid': bid})
+            flash('Cancel Success')
         elif "borrow" in request.form:
             # 借閱書籍，狀態改為B，寫入預約紀錄
             print('借閱書籍')
@@ -430,8 +431,6 @@ def only_cart():
             Book_Record.update_user_borrow_record_status(
                 {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
             reserve_status = 'B'
-        else:
-            print('預約中')
 
         # if reserve_status == 'A':
         #     reserve_status_str = '預約中'

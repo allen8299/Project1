@@ -10,11 +10,11 @@
 {% with messages = get_flashed_messages() %}
 {% if messages[0] == 'Reserve Error' %}
 <script language="javascript">
-  alert('預約日期不得小於等於今天日期');
+  alert('預約日期不得小於等於今天日期！');
 </script>
 {% elif messages[0] == 'Reserve Success' %}
 <script language="javascript">
-  alert('預約成功');
+  alert('預約成功！');
 </script>
 {% endif %}
 {% endwith %}

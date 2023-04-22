@@ -9,11 +9,13 @@
 
 {% with messages = get_flashed_messages() %}
 {% if messages[0] == 'No permission' %}
-
 <script language="javascript">
   alert('您沒有使用者的權限喔！');
 </script>
-
+{% elif messages[0] == 'Cancel Success' %}
+<script language="javascript">
+  alert('取消預約成功！');
+</script>
 {% endif %}
 {% endwith %}
 
@@ -62,9 +64,7 @@
                 借閱書籍
               </button>
               {% elif book.預約狀態 == 'C' %}
-              預約過期
-              {% elif book.預約狀態 == 'D' %}
-              預約已取消
+              預約已過期
               {% endif %}
             </center>
           </td>
