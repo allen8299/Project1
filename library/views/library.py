@@ -295,19 +295,32 @@ def order():
 
 @store.route('/orderlist')
 def book_orderlist():
-    if "oid" in request.args:
-        pass
+    # if "oid" in request.args:
+    #     pass
 
     user_id = current_user.id
 
-    data = Member.get_order(user_id)
+    data = Order_List.get_borrowing_record(user_id)
     orderlist = []
 
     for i in data:
+        # 無法理解oracle的date怎麼存的
+        borrow_date = i[2]
+        borrow_date = borrow_date.strftime('%Y-%m-%d')
+        # borrow_date = str(borrow_date)[0:10]
+
+        return_date = i[3]
+        if return_date != None:
+            return_date = return_date.strftime('%Y-%m-%d')
+
+        limit_date = i[4]
+        limit_date = limit_date.strftime('%Y-%m-%d')
         temp = {
-            '訂單編號': i[0],
-            '訂單總價': i[3],
-            '訂單時間': i[2]
+            '書籍編號': i[0],
+            '書籍名稱': i[1],
+            '借閱日期': borrow_date,
+            '應歸還日期': limit_date,
+            '實際歸還日期': return_date
         }
         orderlist.append(temp)
 
@@ -415,7 +428,8 @@ def only_cart():
         # reserve_status_str = ''
         bid = row[1]
         reserve_date = row[2]
-        reserve_date = str(reserve_date)[0:10]
+        # reserve_date = str(reserve_date)[0:10]
+        reserve_date = reserve_date.strftime('%Y-%m-%d')
         print(today_date, reserve_date)
         reserve_status = row[3]
         book_row = Book.get_book(bid)

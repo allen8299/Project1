@@ -6,21 +6,45 @@
 {% block title %}library{% endblock title%}
 
 {% block content %}
-<br/>
+<br />
 <div class="container history">
-  <h2>歷史預約</h2>
+  <h2>歷史借閱</h2>
   <form method="post" action={{ url_for('library.book_orderlist') }}>
     <table class="table table-bordered">
       <tr>
-        <th><center>書籍名稱</center></th>
-        <th><center>借閱日期</center></th>
-        <th><center>實際歸還日期</center></th>
+        <th>
+          <center>書籍名稱</center>
+        </th>
+        <th>
+          <center>借閱日期</center>
+        </th>
+        <th>
+          <center>應歸還日期</center>
+        </th>
+        <th>
+          <center>實際歸還日期</center>
+        </th>
       </tr>
       {% for i in data %}
       <tr>
-        <td> <center>{{ i.書籍名稱 }}</center></td>
-        <td> <center>{{ i.借閱日期 }}</center></td>
-        <td> <center>{{ i.實際歸還日期 }}</center></td>
+        <td>
+          <center>{{ i.書籍名稱 }}</center>
+        </td>
+        <td>
+          <center>{{ i.借閱日期 }}</center>
+        </td>
+        <td>
+          <center>{{ i.應歸還日期 }}</center>
+        </td>
+        {% if i.實際歸還日期 == None %}
+        <td>
+          <center>尚未歸還</center>
+        </td>
+        {% else %}
+        <td>
+          <center>{{ i.實際歸還日期 }}</center>
+        </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </table>
@@ -29,4 +53,3 @@
 </div>
 
 {% endblock content %}
-

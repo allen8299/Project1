@@ -49,10 +49,6 @@ class Member():
         DB.execute_input(DB.prepare(sql), {'tno': tno, 'pid': pid})
         DB.commit()
 
-    def get_order(userid):
-        sql = 'SELECT * FROM BORROWINGRECORDS WHERE MID = :id ORDER BY BORROWDATE DESC'
-        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
-
     def get_role(userid):
         sql = 'SELECT IDENTITY, NAME FROM MEMBER WHERE MID = :id '
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': userid}))
@@ -157,13 +153,19 @@ class Order_List():
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
-    def get_order():
-        sql = 'SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
-        return DB.fetchall(DB.execute(DB.connect(), sql))
+    # def get_order():
+    #     sql = 'SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
+    #     return DB.fetchall(DB.execute(DB.connect(), sql))
 
-    def get_orderdetail():
-        sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
-        return DB.fetchall(DB.execute(DB.connect(), sql))
+    # def get_orderdetail():
+    #     sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
+    #     return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def get_borrowing_record(userid):
+        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE \
+               FROM BORROWINGRECORDS, BOOKS \
+               WHERE MID = :id AND BOOKS.BID = BORROWINGRECORDS.BID ORDER BY BORROWDATE DESC'
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
 
 
 class Analysis():
