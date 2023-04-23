@@ -93,14 +93,11 @@ def library():
 
         # 確認借閱狀態
         bb_data = Book_Record.check_book_is_borrowed(bid)
-        print('bb_data:')
-        print(bb_data)
         if bb_data is not None:
             book_is_borrowed = True
+            book_is_reserved = True
         # 確認預約狀態
         br_data = Book_Record.check_book_is_reserved(bid)
-        print('br_data:')
-        print(br_data)
         if br_data is not None:
             book_is_reserved = True
 
@@ -390,16 +387,16 @@ def book_cart():
             bid = request.values.get('borrow')
             # 借閱書籍，狀態改為B，寫入預約紀錄
             print('借閱書籍')
-            
+
             # 取得當天日期
-            today_data = datetime.now().date()
-            future_date = today_data + timedelta(days=14)
-            print('當天日期：', today_data)
+            today_date = datetime.now().date()
+            future_date = today_date + timedelta(days=14)
+            print('當天日期：', today_date)
             print('14 天後的日期：', future_date)
             Book_Record.update_user_borrow_record_status(
                 {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
             Book_Record.insert_borrow_record(
-                {'mid': current_user.id, 'bid': bid, 'borrowdate': today_data, 'limitdate': future_date})
+                {'mid': current_user.id, 'bid': bid, 'borrowdate': today_date, 'limitdate': future_date})
             flash('Borrow Success')
 
     book_data = only_cart()
@@ -519,28 +516,6 @@ def book_reserve():
             reserve_date = date_obj.strftime("%Y-%m-%d")
             print(today_date, reserve_date)
 
-            data = Book.get_book(bid)
-            bname = data[1]
-            press = data[2]
-            pdate = data[3]
-            idate = data[4]
-            author = data[5]
-            themeid = data[6]
-            categoryid = data[7]
-            image = 'sdg.jpg'
-
-            theme_data = Theme.get_theme(themeid)
-            category_data = Categories.get_categories(categoryid)
-            book = {
-                '書籍編號': bid,
-                '書籍名稱': bname,
-                '作者': author,
-                '出版社': press,
-                '出版日期': pdate,
-                '入庫日期': idate,
-                '書籍類別': theme_data[1],
-                '書籍主題': category_data[1]
-            }
             if reserve_date <= today_date:
                 flash('Reserve Error')
             else:
@@ -551,8 +526,40 @@ def book_reserve():
                 Book_Record.insert_reservation_record(
                     {'mid': current_user.id, 'bid': bid, 'reservedate': reserve_date, 'reservestatus': reserve_status})
                 flash('Reserve Success')
+        elif "borrow" in request.form:
+            print('borrowborrowborrow')
+            bid = request.values.get('borrow')
+            Book_Record.insert_borrow_record(
+                {'mid': current_user.id, 'bid': bid, 'borrowdate': today, 'limitdate': future_date})
+            # 借閱就不能預約了
+            book_is_borrowed = True
+            book_is_reserved = True
+            flash('Borrow Success')
+            
+    # 最後一律重新get_book
+    # 感覺還有更好的寫法
+    data = Book.get_book(bid)
+    bname = data[1]
+    press = data[2]
+    pdate = data[3]
+    idate = data[4]
+    author = data[5]
+    themeid = data[6]
+    categoryid = data[7]
+    image = 'sdg.jpg'
 
-    # FIXME 改成bid去get_book可能比較好
+    theme_data = Theme.get_theme(themeid)
+    category_data = Categories.get_categories(categoryid)
+    book = {
+        '書籍編號': bid,
+        '書籍名稱': bname,
+        '作者': author,
+        '出版社': press,
+        '出版日期': pdate,
+        '入庫日期': idate,
+        '書籍類別': theme_data[1],
+        '書籍主題': category_data[1]
+    }
     return render_template('book.html', data=book, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
 
 
