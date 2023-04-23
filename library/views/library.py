@@ -294,7 +294,7 @@ def order():
 
 
 @store.route('/orderlist')
-def orderlist():
+def book_orderlist():
     if "oid" in request.args:
         pass
 
@@ -311,19 +311,7 @@ def orderlist():
         }
         orderlist.append(temp)
 
-    orderdetail_row = Order_List.get_orderdetail()
-    orderdetail = []
-
-    for j in orderdetail_row:
-        temp = {
-            '訂單編號': j[0],
-            '書籍名稱': j[1],
-            '商品單價': j[2],
-            '訂購數量': j[3]
-        }
-        orderdetail.append(temp)
-
-    return render_template('orderlist.html', data=orderlist, detail=orderdetail, user=current_user.name)
+    return render_template('orderlist.html', data=orderlist, user=current_user.name)
 
 
 def change_order():

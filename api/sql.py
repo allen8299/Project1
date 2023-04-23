@@ -50,7 +50,7 @@ class Member():
         DB.commit()
 
     def get_order(userid):
-        sql = 'SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC'
+        sql = 'SELECT * FROM BORROWINGRECORDS WHERE MID = :id ORDER BY BORROWDATE DESC'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
 
     def get_role(userid):
