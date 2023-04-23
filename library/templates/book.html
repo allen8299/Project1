@@ -67,54 +67,22 @@
             &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow"
               disabled>借閱書籍</button>
             {% else %}
-            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
-              name="borrow" onclick="return (confirm('你確定要借閱 \'{{ data.書籍名稱 }}\' 嗎？'))">借閱書籍</button>
+            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow"
+              onclick="return (confirm('你確定要借閱 \'{{ data.書籍名稱 }}\' 嗎？'))">借閱書籍</button>
             {% endif %}
 
-            &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review" disabled>評論書籍</button>
+            &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review"
+              disabled>評論書籍</button>
             &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
-
           </div>
         </div>
-        <div class="card">
-          <div class="card-body">
-            <h3><span>評分/評論</span></h3>
-            <div class="fraction">
-              <label>平均分數：</label>
-              <label>5.0</label>
-            </div>
-            <div class="then">
-              <label>總評論數：</label>
-              <label>2</label>
-            </div>
-          </br>
-            <div class="bookcomment slick-initialized slick-slider">
-              <div class="slick-list draggable">
-                <div class="slick-track" style="opacity: 1; width: 536px; transform: translate3d(0px, 0px, 0px);">
-                  <div class="slick-slide slick-current slick-active" style="width: 268px;" tabindex="-1"
-                    data-slick-index="0" aria-hidden="false">
-                    <div class="commentblock">
-                      <div class="name">林*聆</div>
-                      <p id="comment">Allen老師真帥，值得👍</p>
-                    </div>
-                  </div>
-                  <div class="slick-slide slick-active" style="width: 268px;" tabindex="-1" data-slick-index="1"
-                    aria-hidden="false">
-                    <div class="commentblock">
-                      <div class="name">陳*智</div>
-                      <p id="comment">介紹很多關於學習的方法與技巧，其中撰寫讀書筆記的章節尤其推薦，不前照著做，收穫很大。</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 預約書籍Modal -->
-        <div class="modal fade" id="review_staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-          tabindex="-1" aria-labelledby="review_staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
+      </form>
+      <!-- 預約書籍Modal -->
+      <div class="modal fade" id="review_staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="review_staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="post" action={{ url_for('library.book_reserve') }}>
               <div class="modal-header">
                 <h5 class="modal-title" id="review_staticBackdropLabel">預約書籍</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -129,10 +97,44 @@
                 <button class="btn btn-outline-primary" type="submit" value="{{data.書籍編號}}" name="reserve">預約書籍</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
               </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h3><span>評分/評論</span></h3>
+          <div class="fraction">
+            <label>平均分數：</label>
+            <label>5.0</label>
+          </div>
+          <div class="then">
+            <label>總評論數：</label>
+            <label>2</label>
+          </div>
+          </br>
+          <div class="bookcomment slick-initialized slick-slider">
+            <div class="slick-list draggable">
+              <div class="slick-track" style="opacity: 1; width: 536px; transform: translate3d(0px, 0px, 0px);">
+                <div class="slick-slide slick-current slick-active" style="width: 268px;" tabindex="-1"
+                  data-slick-index="0" aria-hidden="false">
+                  <div class="commentblock">
+                    <div class="name">林*聆</div>
+                    <p id="comment">Allen老師真帥，值得👍</p>
+                  </div>
+                </div>
+                <div class="slick-slide slick-active" style="width: 268px;" tabindex="-1" data-slick-index="1"
+                  aria-hidden="false">
+                  <div class="commentblock">
+                    <div class="name">陳*智</div>
+                    <p id="comment">介紹很多關於學習的方法與技巧，其中撰寫讀書筆記的章節尤其推薦，不前照著做，收穫很大。</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
