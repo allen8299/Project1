@@ -260,10 +260,11 @@ class Book_Record():
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))
     
     def insert_borrow_record(input):
-        sql = 'INSERT INTO BORROWINGRECORDS (MID, BID, BORROWDATE, RETURNDATE, LIMITDATE) VALUES (:mid, :bid, :borrowdate, :returndate, :limitdate)'
+        sql = 'INSERT INTO BORROWINGRECORDS (MID, BID, BORROWDATE, LIMITDATE) VALUES (:mid, :bid, TO_DATE(:borrowdate, \'YYYY-MM-DD\'), TO_DATE(:limitdate, \'YYYY-MM-DD\'))'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+        
     def get_user_borrow_record(user_id):
         sql = 'SELECT MID, BID, RESERVEDATE, RESERVESTATUS  FROM RESERVATIONRECORDS WHERE RESERVATIONRECORDS.MID = :id'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': user_id}))

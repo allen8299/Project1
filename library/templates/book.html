@@ -22,9 +22,6 @@
 {% set temp = 'book/' + data.書籍編號 + '.jpeg'%}
 
 
-
-
-</div> -->
 <div class="product_content">
   <div class="row justify-content-center">
     <div class="card" style="width: 20rem;margin-left:5%">
@@ -50,7 +47,7 @@
               <li>預約狀態：預約中</li>
               {% endif %}
             </ul>
-            
+
             {% if book_is_reserved == True %}
             &nbsp;<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
               data-bs-target="#review_staticBackdrop" disabled>
@@ -63,13 +60,13 @@
             </button>
             {% endif %}
             {% if book_is_borrowed == True %}
-            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
-            name="borrow" disabled>借閱書籍</button>
+            &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}" name="borrow"
+              disabled>借閱書籍</button>
             {% else %}
             &nbsp;<button class="btn btn-outline-success" type="submit" value="{{data.書籍編號}}"
-            name="borrow">借閱書籍</button>
+              name="borrow">借閱書籍</button>
             {% endif %}
-            
+
             &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
             &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
 
@@ -99,7 +96,6 @@
         </div>
       </form>
     </div>
-
   </div>
 </div>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
