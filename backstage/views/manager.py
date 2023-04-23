@@ -144,18 +144,24 @@ def edit():
         return redirect(url_for('manager.bookManager'))
 
     else:
-        book = show_info()
-        return render_template('edit.html', data=book)
+        book = show_book_info()
+        # categories = Theme.get_all_theme()
+        categories = dict(Categories.get_all_categories())
+        themes = dict(Theme.get_all_theme())
+        # print(type(categories))
+        print(categories)
+        return render_template('edit.html', data=book, categories=categories, themes=themes)
 
 
-def show_info():
+def show_book_info():
     bid = request.args['bid']
     data = Book.get_book(bid)
     pname = data[1]
     price = data[2]
     category = data[3]
     description = data[4]
-
+    print(data[6])
+    print(data[7])
     book = {
         '書籍編號': data[0],
         '書籍名稱': data[1],

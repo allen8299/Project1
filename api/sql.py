@@ -242,12 +242,18 @@ class Theme():
     def get_theme(themeid):
         sql = 'SELECT * FROM THEME WHERE THEMEID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': themeid}))
+    def get_all_theme():
+        sql = 'SELECT * FROM THEME'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
     
 # 20230420 CATEGORIES
 class Categories():
     def get_categories(categoryid):
         sql = 'SELECT * FROM CATEGORIES WHERE CATEGORYID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': categoryid}))
+    def get_all_categories():
+        sql = 'SELECT * FROM CATEGORIES'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 
 # 20230422 借閱/預約相關紀錄
 class Book_Record():

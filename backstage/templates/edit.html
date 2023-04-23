@@ -35,33 +35,33 @@
         <td><input class="form-control" type="text" value="{{ data.入庫日期 }}" name="book_idate" readonly></td>
       </tr>
       <tr>
-        <th>書籍類別</th>
-        <td><input class="form-control" type="text" value="{{ data.書籍類別 }}" name="book_category" readonly></td>
-      </tr>
-      <tr>
-        <th>書籍主題</th>
-        <td><input class="form-control" type="text" value="{{ data.書籍主題 }}" name="book_theme" readonly></td>
-      </tr>
-      <!-- <tr>
-        <th>書籍類型</th>
+        <th>書籍類別(目前沒功用)</th>
         <td>
-          <select class="form-control" name="category">
-            {% if data.類別 == 'CD' %}
-            <option value="BOOK">BOOK</option>
-            <option value="DVD">DVD</option>
-            <option value="CD" selected>CD</option>
-            {% elif data.類別 == 'DVD' %}
-            <option value="BOOK">BOOK</option>
-            <option value="DVD" selected>DVD</option>
-            <option value="CD">CD</option>
+          <select class="form-select" name="book_category" readonly>
+            {% for key, value in categories.items() %}
+            {% if data.書籍類別 == key %}
+            <option value="{{ key }}" selected>{{ value }}</option>
             {% else %}
-            <option value="BOOK" selected>BOOK</option>
-            <option value="DVD">DVD</option>
-            <option value="CD">CD</option>
+            <option value="{{ key }}">{{ value }}</option>
             {% endif %}
+            {% endfor %}
           </select>
         </td>
-      </tr> -->
+      </tr>
+      <tr>
+        <th>書籍主題(目前沒功用)</th>
+        <td>
+          <select class="form-select" name="book_theme" readonly>
+            {% for key, value in themes.items() %}
+            {% if data.書籍主題 == key %}
+            <option value="{{ key }}" selected>{{ value }}</option>
+            {% else %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
     </table>
     <center>
       <div class="option">
