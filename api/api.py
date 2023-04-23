@@ -50,7 +50,7 @@ def login():
             if( identity == 'user'):
                 return redirect(url_for('library.library'))
             else:
-                return redirect(url_for('manager.productManager'))
+                return redirect(url_for('manager.bookManager'))
         
         else:
             flash('*密碼錯誤，請再試一次')

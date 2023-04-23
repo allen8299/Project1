@@ -9,60 +9,64 @@
 {% block content%}
 
 
-<br/>
+<br />
 <div class="container-xl">
-  <br/>
+  <br />
   <form method="post" enctype=multipart/form-data action={{ url_for('manager.edit') }}>
     <table class="table table-bordered">
       <tr>
-        <th>商品編號</th>
-        <td><input class="form-control" type="text" value="{{ data.商品編號 }}" name="pid" readonly class="id_input"></td>
+        <th>書籍名稱</th>
+        <td><input class="form-control" type="text" value="{{ data.書籍名稱 }}" name="book_name" required></td>
       </tr>
       <tr>
-        <th>商品名稱</th>
-        <td><input class="form-control" type="text" value="{{ data.商品名稱 }}" name="name" required></td>
+        <th>書籍作者</th>
+        <td><input class="form-control" type="text" value="{{ data.作者 }}" name="book_author" required></td>
       </tr>
       <tr>
-        <th>單價</th>
-        <td><input class="form-control" type="text" value="{{ data.單價 }}" name="price" required></td>
+        <th>出版社</th>
+        <td><input class="form-control" type="text" value="{{ data.出版社 }}" name="book_press" required></td>
       </tr>
       <tr>
-        <th>類別</th>
+        <th>出版日期</th>
+        <td><input class="form-control" type="text" value="{{ data.出版日期 }}" name="book_pdate" readonly></td>
+      </tr>
+      <tr>
+        <th>入庫日期</th>
+        <td><input class="form-control" type="text" value="{{ data.入庫日期 }}" name="book_idate" readonly></td>
+      </tr>
+      <tr>
+        <th>書籍類別</th>
+        <td><input class="form-control" type="text" value="{{ data.書籍類別 }}" name="book_category" readonly></td>
+      </tr>
+      <tr>
+        <th>書籍主題</th>
+        <td><input class="form-control" type="text" value="{{ data.書籍主題 }}" name="book_theme" readonly></td>
+      </tr>
+      <!-- <tr>
+        <th>書籍類型</th>
         <td>
           <select class="form-control" name="category">
             {% if data.類別 == 'CD' %}
-              <option value="BOOK">BOOK</option>
-              <option value="DVD">DVD</option>
-              <option value="CD" selected>CD</option>
+            <option value="BOOK">BOOK</option>
+            <option value="DVD">DVD</option>
+            <option value="CD" selected>CD</option>
             {% elif data.類別 == 'DVD' %}
-              <option value="BOOK">BOOK</option>
-              <option value="DVD" selected>DVD</option>
-              <option value="CD">CD</option>
+            <option value="BOOK">BOOK</option>
+            <option value="DVD" selected>DVD</option>
+            <option value="CD">CD</option>
             {% else %}
-              <option value="BOOK" selected>BOOK</option>
-              <option value="DVD">DVD</option>
-              <option value="CD">CD</option>
+            <option value="BOOK" selected>BOOK</option>
+            <option value="DVD">DVD</option>
+            <option value="CD">CD</option>
             {% endif %}
-            
-        </select>
-      </tr>
-      <tr>
-        <th>商品敘述</th>
-        <td>
-          <textarea class="form-control" name="description">{{ data.商品敘述 }}</textarea>
-        </td>
-      </tr>
-      <!-- <tr>
-        <th>商品圖片</th>
-        <td>
-          <input type="file" name="file" id="file-uploader" data-target="file-uploader"/>
+          </select>
         </td>
       </tr> -->
     </table>
     <center>
       <div class="option">
-        <button class="btn btn-outline-success" type="submit">確定修改</button> 
-        <a href="{{ url_for('manager.productManager') }}"><button class="btn btn-outline-danger">回商品管理</button></a>
+        <button class="btn btn-outline-success" type="submit">確定修改</button>
+        <a href="{{ url_for('manager.bookManager') }}"><button class="btn btn-outline-danger">回書籍管理</button></a>
       </div>
     </center>
 

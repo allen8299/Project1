@@ -209,7 +209,7 @@ class Book():
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': bid}))[0]
 
     def add_book(input):
-        sql = 'INSERT INTO BOOKS VALUES (:bid, :bname, :author, :press, :pdate, :idate, :categoryid, :themeid)'
+        sql = 'INSERT INTO BOOKS (BID, BNAME, AUTHOR, PRESS, PDATE, IDATE, CATEGORYID, THEMEID) VALUES (:bid, :bname, :author, :press, TO_DATE(:pdate, \'YYYY-MM-DD\'), TO_DATE(:idate, \'YYYY-MM-DD\'), :categoryid, :themeid)'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
@@ -219,10 +219,14 @@ class Book():
         DB.execute_input(DB.prepare(sql), {'id': bid})
         DB.commit()
 
+    # def update_book(input):
+    #     sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press, \
+    #                            PDATE=:pdate, IDATE=:idate, CATEGORYID=:categoryid, THEMEID=:themeid \
+    #            WHERE BID=:bid'
+    #     DB.execute_input(DB.prepare(sql), input)
+    #     DB.commit()
     def update_book(input):
-        sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press, \
-                               PDATE=:pdate, IDATE=:idate, CATEGORYID=:categoryid, THEMEID=:themeid \
-               WHERE BID=:bid'
+        sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press WHERE BID=:bid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 

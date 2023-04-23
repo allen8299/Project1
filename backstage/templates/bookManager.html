@@ -1,0 +1,211 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %} 書籍管理 {% endblock title %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'No permission' %}
+
+<script language="javascript">
+
+    alert('您沒有使用者的權限喔！');
+
+</script>
+
+
+{% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'failed' %}
+
+<script language="javascript">
+
+    alert('有使用者有使用到這筆資料，所以不能刪除');
+
+</script>
+
+{% endif %}
+{% endwith %}
+
+<script>
+    $(document).ready(function () {
+        $("#keyword").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#book tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+&nbsp;
+&nbsp;
+<div class="d-flex justify-content-between container-xxl">
+    <div class="d-flex col-sm-4">
+        <span class="input-group-text" id="basic-addon1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+                viewBox="0 0 16 16">
+                <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+        </span>
+        <input class="form-control me-2" id="keyword" placeholder="搜尋書籍" aria-label="Search">
+    </div>
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        新增書籍
+    </button>
+</div>
+
+<form method="post" enctype=multipart/form-data action={{ url_for('manager.add') }}>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">新增書籍</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inputBookName" class="form-label">書籍名稱</label>
+                        <input type="text" class="form-control" id="inputBookName" name="book_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputAuthor" class="form-label">書籍作者</label>
+                        <input type="text" class="form-control" id="inputAuthor" name="book_author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPress" class="form-label">出版社</label>
+                        <input type="text" class="form-control" id="inputPress" name="book_press" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPDate" class="form-label">出版日期</label>
+                        <input type="text" class="form-control" id="datepickerPDate" name="book_pdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputIDate" class="form-label">入庫日期</label>
+                        <input type="text" class="form-control" id="datepickerIDate" name="book_idate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputBookCategory" class="form-label">書籍類型</label>
+                        <!-- 有空再改從DB來 -->
+                        <select id="inputBookCategory" class="form-select" name="book_category" required>
+                            <option selected disabled value="">請選擇類型</option>
+                            <option value="C001">總類</option>
+                            <option value="C002">哲學類</option>
+                            <option value="C003">宗教類</option>
+                            <option value="C004">科學類</option>
+                            <option value="C005">應用科學類</option>
+                            <option value="C006">社會科學類</option>
+                            <option value="C007">史地類</option>
+                            <option value="C008">中國史地</option>
+                            <option value="C009">世界史地</option>
+                            <option value="C010">語言文學類</option>
+                            <option value="C011">藝術類</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputBookTheme" class="form-label">書籍主題</label>
+                        <!-- 有空再改從DB來 -->
+                        <select id="inputBookTheme" class="form-select" name="book_theme" required>
+                            <option selected disabled value="">請選擇主題</option>
+                            <option value="T001">圖書</option>
+                            <option value="T002">期刊</option>
+                            <option value="T003">影聽資料</option>
+                            <option value="T004">電子資源</option>
+                            <option value="T005">卡通及漫畫</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-success">確定新增</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<div class="container-xxl">
+
+    <form method='post' action={{ url_for('manager.bookManager') }}>
+        <table id="manager" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="2" width="20%">
+                        <center>資料操作</center>
+                    </th>
+                    <th width="12.5%">
+                        <center>書籍編號</center>
+                    </th>
+                    <th width="20%">
+                        <center>書籍名稱</center>
+                    </th>
+                    <th width="10%">
+                        <center>書籍主題</center>
+                    </th>
+                    <th width="10%">
+                        <center>書籍類別</center>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody id="book">
+                {% for i in book_data %}
+                <tr>
+                    <td>
+                        <center><button type="submit" value="{{i.書籍編號}}" name="edit"
+                                class="btn btn-success">編輯書籍</button></center>
+                    </td>
+                    <td>
+                        <center><button type="submit" value="{{i.書籍編號}}" name="delete"
+                                onclick="return (confirm('你確定要刪除 \'{{ i.書籍名稱 }}\' 嗎？'))"
+                                class="btn btn-danger" disabled>刪除書籍</button></center>
+                    </td>
+                    <td>
+                        <center>{{ i.書籍編號 }}</center>
+                    </td>
+                    <td>{{ i.書籍名稱 }}</td>
+                    <td>{{ i.書籍主題 }}</td>
+                    <td>{{ i.書籍類別 }}</td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </form>
+
+
+</div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+    function have_book() {
+        alert('有使用者有使用到這筆資料，所以不能刪除');
+    }
+</script>
+<script>
+    $(function () {
+        $('#datepickerPDate').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $('#datepickerIDate').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+    });
+</script>
+
+{% endblock content %}
