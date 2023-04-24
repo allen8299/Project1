@@ -162,13 +162,13 @@ class Order_List():
     #     return DB.fetchall(DB.execute(DB.connect(), sql))
     
     def get_user_borrowing_record(userid):
-        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE \
+        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE, MID \
                FROM BORROWINGRECORDS, BOOKS \
                WHERE MID = :id AND BOOKS.BID = BORROWINGRECORDS.BID ORDER BY BORROWDATE DESC'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
     
     def get_borrowing_record_not_return():
-        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE \
+        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE, MID \
                FROM BORROWINGRECORDS, BOOKS \
                WHERE BOOKS.BID = BORROWINGRECORDS.BID \
                AND (RETURNDATE IS NULL OR RETURNDATE = \'\' ) \
