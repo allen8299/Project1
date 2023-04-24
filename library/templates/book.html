@@ -43,7 +43,7 @@
               <li>書籍編號：{{data.書籍編號 }}</li>
               <li>作者：{{data.作者 }}</li>
               <li>出版社：{{data.出版社 }}</li>
-              <li>出版日期：{{data.出版日期 }}</li>
+              <li>出版日期：{{data.出版日期.strftime('%Y-%m-%d') }}</li>
               {% if book_is_borrowed == True %}
               <li>借閱狀態：借閱中</li>
               {% endif %}

@@ -497,6 +497,8 @@ def book_reserve():
     today_date = datetime.today().strftime('%Y-%m-%d')
     today = datetime.now().date()
     future_date = today + timedelta(days=14)
+    today = today.strftime('%Y-%m-%d')
+    future_date = future_date.strftime('%Y-%m-%d')
 
     print('當天日期：', today)
     print('14 天後的日期：', future_date)
