@@ -92,8 +92,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="inputBookCategory" class="form-label">書籍類型</label>
-                        <!-- 有空再改從DB來 -->
                         <select id="inputBookCategory" class="form-select" name="book_category" required>
+                            <option selected disabled value="">請選擇類型</option>
+                            {% for key, value in categories.items() %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        <!-- <select id="inputBookCategory" class="form-select" name="book_category" required>
                             <option selected disabled value="">請選擇類型</option>
                             <option value="C001">總類</option>
                             <option value="C002">哲學類</option>
@@ -106,19 +111,24 @@
                             <option value="C009">世界史地</option>
                             <option value="C010">語言文學類</option>
                             <option value="C011">藝術類</option>
-                        </select>
+                        </select> -->
                     </div>
                     <div class="mb-3">
                         <label for="inputBookTheme" class="form-label">書籍主題</label>
-                        <!-- 有空再改從DB來 -->
                         <select id="inputBookTheme" class="form-select" name="book_theme" required>
+                            <option selected disabled value="">請選擇主題</option>
+                            {% for key, value in themes.items() %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        <!-- <select id="inputBookTheme" class="form-select" name="book_theme" required>
                             <option selected disabled value="">請選擇主題</option>
                             <option value="T001">圖書</option>
                             <option value="T002">期刊</option>
                             <option value="T003">影聽資料</option>
                             <option value="T004">電子資源</option>
                             <option value="T005">卡通及漫畫</option>
-                        </select>
+                        </select> -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -165,8 +175,8 @@
                     </td>
                     <td>
                         <center><button type="submit" value="{{i.書籍編號}}" name="delete"
-                                onclick="return (confirm('你確定要刪除 \'{{ i.書籍名稱 }}\' 嗎？'))"
-                                class="btn btn-danger" disabled>刪除書籍</button></center>
+                                onclick="return (confirm('你確定要刪除 \'{{ i.書籍名稱 }}\' 嗎？'))" class="btn btn-danger"
+                                disabled>刪除書籍</button></center>
                     </td>
                     <td>
                         <center>{{ i.書籍編號 }}</center>

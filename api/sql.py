@@ -161,11 +161,26 @@ class Order_List():
     #     sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
     #     return DB.fetchall(DB.execute(DB.connect(), sql))
     
-    def get_borrowing_record(userid):
+    def get_user_borrowing_record(userid):
         sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE \
                FROM BORROWINGRECORDS, BOOKS \
                WHERE MID = :id AND BOOKS.BID = BORROWINGRECORDS.BID ORDER BY BORROWDATE DESC'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
+    
+    def get_borrowing_record_not_return():
+        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE \
+               FROM BORROWINGRECORDS, BOOKS \
+               WHERE BOOKS.BID = BORROWINGRECORDS.BID \
+               AND (RETURNDATE IS NULL OR RETURNDATE = \'\' ) \
+               ORDER BY BORROWDATE DESC'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def get_borrowing_record_all():
+        sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE, MID \
+               FROM BORROWINGRECORDS, BOOKS \
+               WHERE BOOKS.BID = BORROWINGRECORDS.BID \
+               ORDER BY BORROWDATE DESC'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 
 
 class Analysis():
@@ -226,7 +241,9 @@ class Book():
     #     DB.execute_input(DB.prepare(sql), input)
     #     DB.commit()
     def update_book(input):
-        sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press WHERE BID=:bid'
+        sql = 'UPDATE BOOKS SET BNAME=:bname, AUTHOR=:author, PRESS=:press, \
+                                CATEGORYID=:categoryid, THEMEID=:themeid \
+               WHERE BID=:bid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
@@ -235,6 +252,9 @@ class Recommend_Book():
         sql = 'INSERT INTO RECOMMENDATION (R_ISBN, R_BNAME, MID) VALUES (:r_isbn, :r_bname, :mid)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+    def get_all_recommend_book():
+        sql = 'SELECT R_ISBN, R_BNAME, MID FROM RECOMMENDATION'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 
 
 # 20230420 THEME

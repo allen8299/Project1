@@ -297,7 +297,7 @@ def book_orderlist():
 
     user_id = current_user.id
 
-    data = Order_List.get_borrowing_record(user_id)
+    data = Order_List.get_user_borrowing_record(user_id)
     orderlist = []
 
     for i in data:
@@ -307,7 +307,7 @@ def book_orderlist():
         # borrow_date = str(borrow_date)[0:10]
 
         return_date = i[3]
-        if return_date != None:
+        if return_date is not None:
             return_date = return_date.strftime('%Y-%m-%d')
 
         limit_date = i[4]
@@ -316,8 +316,8 @@ def book_orderlist():
             '書籍編號': i[0],
             '書籍名稱': i[1],
             '借閱日期': borrow_date,
+            '實際歸還日期': return_date,
             '應歸還日期': limit_date,
-            '實際歸還日期': return_date
         }
         orderlist.append(temp)
 
@@ -427,7 +427,7 @@ def only_cart():
         reserve_date = row[2]
         # reserve_date = str(reserve_date)[0:10]
         reserve_date = reserve_date.strftime('%Y-%m-%d')
-        print(today_date, reserve_date)
+        # print(today_date, reserve_date)
         reserve_status = row[3]
         book_row = Book.get_book(bid)
 

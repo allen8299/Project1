@@ -1,0 +1,50 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %} 讀者推薦書單 {% endblock title %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'No permission' %}
+
+<script language="javascript">
+
+  alert('您沒有使用者的權限喔！');
+
+</script>
+
+
+{% endif %}
+{% endwith %}
+<br />
+<div class="container history">
+  <h2>讀者推薦書單</h2>
+  <!-- <form method="post" action={{ url_for('library.book_recommend') }}> -->
+  <table class="table table-bordered">
+    <tr>
+      <th>
+        <center>ISBN</center>
+      </th>
+      <th>
+        <center>書名</center>
+      </th>
+    </tr>
+    {% for i in recommend_data %}
+    <tr>
+      <td>
+        <center>{{ i.ISBN }}</center>
+      </td>
+      <td>
+        <center>{{ i.書籍名稱 }}</center>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <!-- </form> -->
+</div>
+
+{% endblock content %}

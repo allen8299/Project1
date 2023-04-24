@@ -38,20 +38,33 @@ def bookManager():
 
     if 'delete' in request.values:
         bid = request.values.get('delete')
-        data = Record.delete_check(bid)
+        # data = Record.delete_check(bid)
 
-        if (data != None):
+        # if data is not None:
+        #     flash('failed')
+        # else:
+        #     # 刪除
+        #     Product.delete_product(bid)
+        #     # 重新取data
+        #     data = Product.get_product(bid)
+        # bid = request.values.get('delete')
+        borrow_data = Book_Record.check_book_is_borrowed(bid)
+        reserve_data = Book_Record.check_book_is_reserved(bid)
+        if borrow_data is not None or reserve_data is not None:
             flash('failed')
         else:
-            data = Product.get_product(bid)
-            Product.delete_product(bid)
+            Book.delete_book(bid)
 
     elif 'edit' in request.values:
         bid = request.values.get('edit')
         return redirect(url_for('manager.edit', bid=bid))
 
     book_data = book()
-    return render_template('bookManager.html', book_data=book_data, user=current_user.name)
+    categories = dict(Categories.get_all_categories())
+    themes = dict(Theme.get_all_theme())
+    # print(type(categories))
+    # print(categories)
+    return render_template('bookManager.html', book_data=book_data, categories=categories, themes=themes, user=current_user.name)
 
 
 def book():
@@ -78,7 +91,7 @@ def book():
 def add():
     if request.method == 'POST':
         data = ""
-        while data != None:
+        while data is not None:
             now = datetime.now()
             date_string = now.strftime("%Y%m%d%H%M%S")
             bid = 'B' + date_string
@@ -134,9 +147,12 @@ def edit():
     if request.method == 'POST':
         Book.update_book(
             {
+                'bid': request.values.get('bid'),
                 'bname': request.values.get('book_name'),
                 'author': request.values.get('book_author'),
                 'press': request.values.get('book_press'),
+                'categoryid': request.values.get('book_category'),
+                'themeid': request.values.get('book_theme'),
             }
         )
         print('test')
@@ -145,11 +161,12 @@ def edit():
 
     else:
         book = show_book_info()
+        print(book)
         # categories = Theme.get_all_theme()
         categories = dict(Categories.get_all_categories())
         themes = dict(Theme.get_all_theme())
-        # print(type(categories))
         print(categories)
+        print(themes)
         return render_template('edit.html', data=book, categories=categories, themes=themes)
 
 
@@ -169,39 +186,102 @@ def show_book_info():
         '出版日期': data[3],
         '入庫日期': data[4],
         '作者': data[5],
-        '書籍類別': data[6],
-        '書籍主題': data[7]
+        '書籍類別': data[7],
+        '書籍主題': data[6]
     }
     return book
+
+# 借閱管理(懶得改名)
 
 
 @manager.route('/orderManager', methods=['GET', 'POST'])
 @login_required
 def orderManager():
+    if request.method == 'GET':
+        if (current_user.role == 'user'):
+            flash('No permission')
+            return redirect(url_for('library'))
     if request.method == 'POST':
         pass
     else:
-        order_row = Order_List.get_order()
+        order_row = Order_List.get_borrowing_record_not_return()
         order_data = []
         for i in order_row:
+            # 無法理解oracle的date怎麼存的
+            borrow_date = i[2]
+            borrow_date = borrow_date.strftime('%Y-%m-%d')
+            # borrow_date = str(borrow_date)[0:10]
+
+            return_date = i[3]
+            if return_date is not None:
+                return_date = return_date.strftime('%Y-%m-%d')
+
+            limit_date = i[4]
+            limit_date = limit_date.strftime('%Y-%m-%d')
+
+            mid = i[5]
+            # 根據mid取user姓名
+            member_row = Member.get_role(mid)
+            user_name = member_row[1]
+
             order = {
-                '訂單編號': i[0],
-                '訂購人': i[1],
-                '訂單總價': i[2],
-                '訂單時間': i[3]
+                '書籍編號': i[0],
+                '書籍名稱': i[1],
+                '借閱日期': borrow_date,
+                '實際歸還日期': return_date,
+                '應歸還日期': limit_date,
+                '借閱人名稱': user_name,
+                '借閱人編號': mid
             }
             order_data.append(order)
 
-        orderdetail_row = Order_List.get_orderdetail()
+        # orderdetail_row = Order_List.get_orderdetail()
         order_detail = []
 
-        for j in orderdetail_row:
-            orderdetail = {
-                '訂單編號': j[0],
-                '商品名稱': j[1],
-                '商品單價': j[2],
-                '訂購數量': j[3]
-            }
-            order_detail.append(orderdetail)
+        # for j in orderdetail_row:
+        #     orderdetail = {
+        #         '訂單編號': j[0],
+        #         '商品名稱': j[1],
+        #         '商品單價': j[2],
+        #         '訂購數量': j[3]
+        #     }
+        #     order_detail.append(orderdetail)
 
     return render_template('orderManager.html', orderData=order_data, orderDetail=order_detail, user=current_user.name)
+
+# 讀者推薦書單管理
+
+
+@manager.route('/recommendManager', methods=['GET', 'POST'])
+@login_required
+def recommendManager():
+    if request.method == 'POST':
+        pass
+    else:
+        recommend_row = Recommend_Book.get_all_recommend_book()
+        recommend_data = []
+        for i in recommend_row:
+            r_isbn = i[0]
+            r_bname = i[1]
+            mid = i[2]
+
+            recommend = {
+                'ISBN': r_isbn,
+                '書籍名稱': r_bname,
+                '推薦人編號': mid
+            }
+            recommend_data.append(recommend)
+
+        # orderdetail_row = Order_List.get_orderdetail()
+        # order_detail = []
+
+        # for j in orderdetail_row:
+        #     orderdetail = {
+        #         '訂單編號': j[0],
+        #         '商品名稱': j[1],
+        #         '商品單價': j[2],
+        #         '訂購數量': j[3]
+        #     }
+        #     order_detail.append(orderdetail)
+
+    return render_template('recommendManager.html', recommend_data=recommend_data, user=current_user.name)
