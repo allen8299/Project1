@@ -210,11 +210,12 @@ def orderManager():
             # 無法理解oracle的date怎麼存的
             borrow_date = i[2]
             borrow_date = borrow_date.strftime('%Y-%m-%d')
-            # borrow_date = str(borrow_date)[0:10]
 
             return_date = i[3]
             if return_date is not None:
                 return_date = return_date.strftime('%Y-%m-%d')
+            else:
+                return_date = ''
 
             limit_date = i[4]
             limit_date = limit_date.strftime('%Y-%m-%d')
