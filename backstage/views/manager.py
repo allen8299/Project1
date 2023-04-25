@@ -208,6 +208,7 @@ def orderManager():
             bid = return_book_list[0]
             mid = return_book_list[1]
             today_date = datetime.now().date()
+            today_date = today_date.strftime('%Y-%m-%d')
             print(bid, mid, today_date)
             Book_Record.update_user_borrow_record_returndate(
             {
