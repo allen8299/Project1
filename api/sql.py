@@ -297,17 +297,22 @@ class Book_Record():
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
+    def update_user_borrow_record_returndate(input):
+        sql = 'UPDATE BORROWINGRECORDS SET RETURNDATE=TO_DATE(:returndate, \'YYYY-MM-DD\') WHERE MID=:mid AND BID=:bid '
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
         
     def get_user_borrow_record(user_id):
         sql = 'SELECT MID, BID, RESERVEDATE, RESERVESTATUS  FROM RESERVATIONRECORDS WHERE RESERVATIONRECORDS.MID = :id'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': user_id}))
     
-    def update_user_borrow_record_status(input):
+    def update_user_reserve_record_status(input):
         sql = 'UPDATE RESERVATIONRECORDS SET RESERVESTATUS=:reservestatus WHERE MID=:mid AND BID=:bid '
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
-    def delete_user_borrow_record(input):
+    def delete_user_reserve_record(input):
         sql = 'DELETE FROM RESERVATIONRECORDS WHERE MID=:mid AND BID=:bid '
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()

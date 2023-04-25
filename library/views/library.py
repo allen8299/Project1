@@ -380,7 +380,7 @@ def book_cart():
         if "cancel" in request.form:
             # 取消預約，狀態改為D
             bid = request.values.get('cancel')
-            Book_Record.delete_user_borrow_record(
+            Book_Record.delete_user_reserve_record(
                 {'mid': current_user.id, 'bid': bid})
             flash('Cancel Success')
         elif "borrow" in request.form:
@@ -393,7 +393,7 @@ def book_cart():
             future_date = today_date + timedelta(days=14)
             print('當天日期：', today_date)
             print('14 天後的日期：', future_date)
-            Book_Record.update_user_borrow_record_status(
+            Book_Record.update_user_reserve_record_status(
                 {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
             Book_Record.insert_borrow_record(
                 {'mid': current_user.id, 'bid': bid, 'borrowdate': today_date, 'limitdate': future_date})
@@ -434,12 +434,12 @@ def only_cart():
         if today_date > reserve_date and reserve_status != 'B':
             # 當前日期超過預約日期，也沒有借閱完成(B)，預約狀態改為C(預約過期)
             print('當前日期超過預約日期，預約狀態改為C(預約過期)')
-            Book_Record.update_user_borrow_record_status(
+            Book_Record.update_user_reserve_record_status(
                 {'mid': current_user.id, 'bid': bid, 'reservestatus': 'C'})
             reserve_status = 'C'
         # elif today_date == reserve_date:
         #     print('借閱')
-        #     Book_Record.update_user_borrow_record_status(
+        #     Book_Record.update_user_reserve_record_status(
         #         {'mid': current_user.id, 'bid': bid, 'reservestatus': 'B'})
         #     reserve_status = 'B'
 

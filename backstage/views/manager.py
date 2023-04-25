@@ -202,53 +202,54 @@ def orderManager():
             flash('No permission')
             return redirect(url_for('library'))
     if request.method == 'POST':
-        pass
-    else:
-        order_row = Order_List.get_borrowing_record_not_return()
-        order_data = []
-        for i in order_row:
-            # 無法理解oracle的date怎麼存的
-            borrow_date = i[2]
-            borrow_date = borrow_date.strftime('%Y-%m-%d')
-
-            return_date = i[3]
-            if return_date is not None:
-                return_date = return_date.strftime('%Y-%m-%d')
-            else:
-                return_date = ''
-
-            limit_date = i[4]
-            limit_date = limit_date.strftime('%Y-%m-%d')
-
-            mid = i[5]
-            # 根據mid取user姓名
-            member_row = Member.get_role(mid)
-            user_name = member_row[1]
-
-            order = {
-                '書籍編號': i[0],
-                '書籍名稱': i[1],
-                '借閱日期': borrow_date,
-                '實際歸還日期': return_date,
-                '應歸還日期': limit_date,
-                '借閱人名稱': user_name,
-                '借閱人編號': mid
+        if "return_book" in request.form:
+            print("return_book")
+            return_book_list = request.values.get('return_book').split('|||')
+            bid = return_book_list[0]
+            mid = return_book_list[1]
+            today_date = datetime.now().date()
+            print(bid, mid, today_date)
+            Book_Record.update_user_borrow_record_returndate(
+            {
+                'bid': bid,
+                'mid': mid,
+                'returndate': today_date
             }
-            order_data.append(order)
+        )
 
-        # orderdetail_row = Order_List.get_orderdetail()
-        order_detail = []
+    order_row = Order_List.get_borrowing_record_not_return()
+    order_data = []
+    for i in order_row:
+        # 無法理解oracle的date怎麼存的
+        borrow_date = i[2]
+        borrow_date = borrow_date.strftime('%Y-%m-%d')
 
-        # for j in orderdetail_row:
-        #     orderdetail = {
-        #         '訂單編號': j[0],
-        #         '商品名稱': j[1],
-        #         '商品單價': j[2],
-        #         '訂購數量': j[3]
-        #     }
-        #     order_detail.append(orderdetail)
+        return_date = i[3]
+        if return_date is not None:
+            return_date = return_date.strftime('%Y-%m-%d')
+        else:
+            return_date = ''
 
-    return render_template('orderManager.html', orderData=order_data, orderDetail=order_detail, user=current_user.name)
+        limit_date = i[4]
+        limit_date = limit_date.strftime('%Y-%m-%d')
+
+        mid = i[5]
+        # 根據mid取user姓名
+        member_row = Member.get_role(mid)
+        user_name = member_row[1]
+
+        order = {
+            '書籍編號': i[0],
+            '書籍名稱': i[1],
+            '借閱日期': borrow_date,
+            '實際歸還日期': return_date,
+            '應歸還日期': limit_date,
+            '借閱人名稱': user_name,
+            '借閱人編號': mid
+        }
+        order_data.append(order)
+
+    return render_template('orderManager.html', orderData=order_data, user=current_user.name)
 
 # 讀者推薦書單管理
 

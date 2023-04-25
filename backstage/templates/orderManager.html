@@ -149,9 +149,9 @@
                     </td>
                     <td>
                         <center>
-                            <button type="submit" value="{{i.書籍編號}}" name="return_book"
-                                onclick="return (confirm('你確定要歸還 \'{{ i.書籍名稱 }}\' 嗎？'))" class="btn btn-danger"
-                                disabled>歸還書籍</button>
+                            <button type="submit" value="{{i.書籍編號}}|||{{i.借閱人編號}}" name="return_book"
+                                onclick="return (confirm('你確定要歸還 \'{{ i.書籍名稱 }}\' 嗎？'))"
+                                class="btn btn-danger">歸還書籍</button>
                         </center>
                     </td>
                 </tr>
