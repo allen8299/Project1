@@ -72,13 +72,13 @@
               onclick="return (confirm('你確定要借閱 \'{{ data.書籍名稱 }}\' 嗎？'))">借閱書籍</button>
             {% endif %}
 
-            &nbsp;<button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review"
-              disabled>評論書籍</button>
+            &nbsp;<button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+              data-bs-target="#commentModal">評論書籍</button>
             &nbsp;<a href="{{ url_for('library.library') }}" class="btn btn-outline-secondary">回書籍列表</a>
           </div>
         </div>
       </form>
-      <!-- 預約書籍Modal -->
+      <!-- 預約書籍 Modal Start-->
       <div class="modal fade" id="review_staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="review_staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -102,6 +102,51 @@
           </div>
         </div>
       </div>
+      <!-- 預約書籍 Modal End-->
+      <!-- 評論書籍 Modal Start-->
+      <!-- 模態框 -->
+      <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="post" action={{ url_for('library.book_reserve') }}>
+              <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">評論</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div>
+                    <label>評級:</label>
+                    <div>
+                      <div class="rating">
+                        <span class="fa fa-star-o" style="font-size:24px;color:rgba(255, 255, 0, 0.781)"></span>
+                        <span class="fa fa-star-o" style="font-size:24px;color:rgba(255, 255, 0, 0.781)"></span>
+                        <span class="fa fa-star-o" style="font-size:24px;color:rgba(255, 255, 0, 0.781)"></span>
+                        <span class="fa fa-star-o" style="font-size:24px;color:rgba(255, 255, 0, 0.781)"></span>
+                        <span class="fa fa-star-o" style="font-size:24px;color:rgba(255, 255, 0, 0.781)"></span>
+                      </div>
+                      <h4 id="rating-value"></h4>
+                    </div>
+                    <script src="rating.js"></script>
+                  </div>
+                  <div>
+                    <label>評論內容:</label>
+                    <div>
+                      <textarea name="content" cols="30" rows="10"></textarea>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- 評論書籍 Modal End-->
+
       <div class="card">
         <div class="card-body">
           <h3><span>評分/評論</span></h3>
@@ -143,12 +188,24 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 <script>
   $(function () {
     $('#datepicker').datepicker({
-				format: 'yyyy-mm-dd'
-			});
+      format: 'yyyy-mm-dd'
+    });
   });
 </script>
-
+<script>
+  function submitComment() {
+    // 假設此處有提交評論的程式碼
+    alert("評論已提交");
+    // 關閉模態框
+    document.getElementById("commentModal").modal("hide");
+  }
+</script>
 {% endblock content%}

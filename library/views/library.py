@@ -537,6 +537,9 @@ def book_reserve():
             book_is_borrowed = True
             book_is_reserved = True
             flash('Borrow Success')
+        elif "review" in request.form:
+            print("review")
+            flash('Review Success')
             
     # 最後一律重新get_book
     # 感覺還有更好的寫法
