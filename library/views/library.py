@@ -496,12 +496,15 @@ def book_reserve():
     # 取得當天日期
     today_date = datetime.today().strftime('%Y-%m-%d')
     today = datetime.now().date()
+    nowTime = datetime.now()
     future_date = today + timedelta(days=14)
     today = today.strftime('%Y-%m-%d')
+    nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')
     future_date = future_date.strftime('%Y-%m-%d')
 
     print('當天日期：', today)
     print('14 天後的日期：', future_date)
+    print('當下時間：', nowTime)
 
     if request.method == 'POST':
         if "reserve" in request.form:
@@ -540,7 +543,7 @@ def book_reserve():
         elif "review" in request.form:
             print("review")
             rating_value = int(request.values.get('star_rating'))
-            # print(rating_value)
+            print(rating_value)
             # 取得bid
             bid = request.values.get('review')
             # print(bid)
@@ -548,7 +551,7 @@ def book_reserve():
             # print(content)
             # 寫入評論
             Book_Review.insert_book_review(
-                    {'mid': current_user.id, 'bid': bid, 'reviewstime': today, 'content': content, 'star': rating_value})
+                    {'mid': current_user.id, 'bid': bid, 'reviewstime': nowTime, 'content': content, 'star': rating_value})
             flash('Review Success')
             book_is_borrowed = False
             book_is_reserved = False
