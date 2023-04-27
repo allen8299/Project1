@@ -316,3 +316,12 @@ class Book_Record():
         sql = 'DELETE FROM RESERVATIONRECORDS WHERE MID=:mid AND BID=:bid '
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
+
+# 20230427 評論相關紀錄
+class Book_Review():
+    def insert_book_review(input):
+        sql = 'INSERT INTO REVIEWS (MID, BID, REVIEWSTIME, CONTENT, STAR) VALUES (:mid, :bid, TO_DATE(:reviewstime, \'YYYY-MM-DD\'), :content, :star)'
+        print(sql)
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()

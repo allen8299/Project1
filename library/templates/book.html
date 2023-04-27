@@ -20,6 +20,10 @@
 <script language="javascript">
   alert('借閱成功！');
 </script>
+{% elif messages[0] == 'Review Success' %}
+<script language="javascript">
+  alert('評論成功！');
+</script>
 {% endif %}
 {% endwith %}
 
@@ -114,7 +118,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <form>
                   <div>
                     <label>評級:</label>
                     <div>
@@ -125,7 +128,7 @@
                         <span class="fa fa-star-o" style="font-size:24px;color:rgba(236, 214, 8, 0.966)"></span>
                         <span class="fa fa-star-o" style="font-size:24px;color:rgba(236, 214, 8, 0.966)"></span>
                       </div>
-                      <h4 id="rating-value"></h4>
+                      <input type="hidden" id="rating-value" name="star_rating"></h4>
                     </div>
                   </div>
                   <div>
@@ -134,7 +137,6 @@
                       <textarea name="content" cols="30" rows="10"></textarea>
                     </div>
                   </div>
-                </form>
               </div>
               <div class="modal-footer">
                 <button class="btn btn-outline-dark" type="submit" value="{{data.書籍編號}}" name="review">評論書籍</button>
@@ -226,7 +228,7 @@
     stars[i].addEventListener("click", function () {
       ratingValue = i + 1
       index = i
-      // document.getElementById("rating-value").innerHTML = "你打的分數是 " + ratingValue
+      document.getElementById("rating-value").value = ratingValue
     })
     stars[i].addEventListener("mouseout", function () {
       for (let j = 0; j < stars.length; j++) {

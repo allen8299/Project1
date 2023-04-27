@@ -12,7 +12,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book, Theme, Categories, Book_Record
+from api.sql import Member, Order_List, Book, Record, Cart, Recommend_Book, Theme, Categories, Book_Record, Book_Review
 
 store = Blueprint('library', __name__, template_folder='../templates')
 
@@ -539,8 +539,30 @@ def book_reserve():
             flash('Borrow Success')
         elif "review" in request.form:
             print("review")
+            rating_value = int(request.values.get('star_rating'))
+            # print(rating_value)
+            # 取得bid
+            bid = request.values.get('review')
+            # print(bid)
+            content = request.values.get('content')
+            # print(content)
+            # 寫入評論
+            Book_Review.insert_book_review(
+                    {'mid': current_user.id, 'bid': bid, 'reviewstime': today, 'content': content, 'star': rating_value})
             flash('Review Success')
-            
+            book_is_borrowed = False
+            book_is_reserved = False
+
+            # 確認借閱狀態
+            bb_data = Book_Record.check_book_is_borrowed(bid)
+            if bb_data is not None:
+                book_is_borrowed = True
+                book_is_reserved = True
+                # 確認預約狀態
+            br_data = Book_Record.check_book_is_reserved(bid)
+            if br_data is not None:
+                book_is_reserved = True
+
     # 最後一律重新get_book
     # 感覺還有更好的寫法
     data = Book.get_book(bid)
