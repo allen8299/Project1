@@ -153,30 +153,25 @@
           <h3><span>評分/評論</span></h3>
           <div class="fraction">
             <label>平均分數：</label>
-            <label>5.0</label>
+            <label>{{total_review.平均分數}}</label>
           </div>
           <div class="then">
             <label>總評論數：</label>
-            <label>2</label>
+            <label>{{total_review.評論數}}</label>
           </div>
           </br>
           <div class="bookcomment slick-initialized slick-slider">
             <div class="slick-list draggable">
               <div class="slick-track" style="opacity: 1; width: 536px; transform: translate3d(0px, 0px, 0px);">
+                {% for i in review_data %}
                 <div class="slick-slide slick-current slick-active" style="width: 268px;" tabindex="-1"
                   data-slick-index="0" aria-hidden="false">
                   <div class="commentblock">
-                    <div class="name">林XX</div>
-                    <p id="comment">我是評論訊息1。</p>
+                    <div class="name">{{ i.評論者姓名 }} ({{ i.評論星等 }})</div>
+                    <p id="comment">{{ i.評論內容 }}</p>
                   </div>
                 </div>
-                <div class="slick-slide slick-active" style="width: 268px;" tabindex="-1" data-slick-index="1"
-                  aria-hidden="false">
-                  <div class="commentblock">
-                    <div class="name">陳OO</div>
-                    <p id="comment">我是評論訊息2，評論訊息2評論訊息2評論訊息2評論訊息2。</p>
-                  </div>
-                </div>
+                {% endfor %}
               </div>
             </div>
           </div>

@@ -325,3 +325,15 @@ class Book_Review():
         print(sql)
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
+    def get_reviews(bid):
+        sql = 'SELECT MID, CONTENT, STAR FROM REVIEWS WHERE BID=:bid ORDER BY REVIEWSTIME DESC '
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'bid': bid}))
+
+    def review_count(bid):
+        sql = 'SELECT COUNT(*) FROM REVIEWS WHERE BID=:bid '
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'bid': bid}))
+
+    def review_star_avg(bid):
+        sql = 'SELECT AVG(star) FROM REVIEWS WHERE BID=:bid '
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'bid': bid}))
