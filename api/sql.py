@@ -171,7 +171,6 @@ class Order_List():
         sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE, MID \
                FROM BORROWINGRECORDS, BOOKS \
                WHERE BOOKS.BID = BORROWINGRECORDS.BID \
-               AND (RETURNDATE IS NULL OR RETURNDATE = \'\' ) \
                ORDER BY BORROWDATE DESC'
         return DB.fetchall(DB.execute(DB.connect(), sql))
     
