@@ -218,7 +218,7 @@ def orderManager():
             }
         )
 
-    order_row = Order_List.get_borrowing_record_not_return()
+    order_row = Order_List.get_borrowing_record()
     order_data = []
     for i in order_row:
         # 無法理解oracle的date怎麼存的

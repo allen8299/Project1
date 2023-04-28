@@ -167,7 +167,7 @@ class Order_List():
                WHERE MID = :id AND BOOKS.BID = BORROWINGRECORDS.BID ORDER BY BORROWDATE DESC'
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': userid}))
     
-    def get_borrowing_record_not_return():
+    def get_borrowing_record():
         sql = 'SELECT BOOKS.BID, BOOKS.BNAME, BORROWDATE, RETURNDATE, LIMITDATE, MID \
                FROM BORROWINGRECORDS, BOOKS \
                WHERE BOOKS.BID = BORROWINGRECORDS.BID \
