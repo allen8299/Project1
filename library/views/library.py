@@ -130,21 +130,20 @@ def library():
         print(avg_score)
         if avg_score is not None:
             avg_score = round(avg_score, 2)
-        else: 
+        else:
             avg_score = '無'
         review_count = Book_Review.review_count(bid)[0]
         if review_count is not None:
             review_count = review_count
-        else: 
+        else:
             review_count = 0
         total_review = {
-            '平均分數': avg_score, 
+            '平均分數': avg_score,
             '評論數': review_count
         }
         print(total_review)
 
-
-        return render_template('book.html', data=book, review_data = review_data, total_review = total_review, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
+        return render_template('book.html', data=book, review_data=review_data, total_review=total_review, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
 
     elif 'page' in request.args:
         page = int(request.args['page'])
@@ -581,7 +580,7 @@ def book_reserve():
             # print(content)
             # 寫入評論
             Book_Review.insert_book_review(
-                    {'mid': current_user.id, 'bid': bid, 'reviewstime': nowTime, 'content': content, 'star': rating_value})
+                {'mid': current_user.id, 'bid': bid, 'reviewstime': nowTime, 'content': content, 'star': rating_value})
             flash('Review Success')
             book_is_borrowed = False
             book_is_reserved = False
@@ -620,7 +619,36 @@ def book_reserve():
         '書籍類別': theme_data[1],
         '書籍主題': category_data[1]
     }
-    return render_template('book.html', data=book, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
+    # 取評論資料
+    review_row = Book_Review.get_reviews(bid)
+    review_data = []
+    for i in review_row:
+        member_data = Member.get_role(i[0])
+        reviews = {
+            '評論者姓名': member_data[1],
+            '評論內容': i[1],
+            '評論星等': i[2]
+        }
+        review_data.append(reviews)
+    print(review_data)
+    avg_score = Book_Review.review_star_avg(bid)[0]
+    print('avg_score')
+    print(avg_score)
+    if avg_score is not None:
+        avg_score = round(avg_score, 2)
+    else:
+        avg_score = '無'
+    review_count = Book_Review.review_count(bid)[0]
+    if review_count is not None:
+        review_count = review_count
+    else:
+        review_count = 0
+    total_review = {
+        '平均分數': avg_score,
+        '評論數': review_count
+    }
+    print(total_review)
+    return render_template('book.html', data=book, review_data=review_data, total_review=total_review, user=current_user.name, book_is_borrowed=book_is_borrowed, book_is_reserved=book_is_reserved)
 
 
 @store.route('/', methods=['GET', 'POST'])
